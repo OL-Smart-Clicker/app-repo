@@ -1,15 +1,14 @@
-# Smart Clicker 2.0
-The Smart Clicker project consists of a backend (**Node.js**, **Express**, **TypeScript**) and a frontend (**Angular**, **TailwindCSS**) that together provide a system for collecting, analysing, and visualising location data sent by ESP32 devices via Azure IoT Hub.
+# Smart Clicker Frontend
+
+This is the frontend for the **Smart Clicker** project, built using **Angular** and **TailwindCSS**. It provides a user interface for viewing and analysing location data sent by ESP32 devices via Azure IoT Hub.
 
 ## Features
-- **Real-time Data Collection** – Receives location data from ESP32 devices via Azure IoT Hub. 
-- **REST API** – Provides an API for accessing stored data.
-- **Authentication** – Secure access to the dashboard.
 - **Question of the Day Input** - Set the Question of the Day and plan questions in advance using a calendar. 
 - **Data Analysis** – Basic visualisation of received data.
 - **Multi-Building Support** – Filter data based on different office locations.
 - **Provisioning and Commissioning Flow (Optional)** - Easily implement the solution in a different location and store data separately.
 - **Interactive Floor Mapping (Optional)** - Create a virtual floor plan of the office and determine the UWB anchors locations.
+- **Authentication** – Secure access to the dashboard.
 
 ## Getting Started
 
@@ -23,19 +22,8 @@ Ensure you have the following installed:
 1. Clone the repository:
     ```
     git clone https://github.com/OL-Smart-Clicker/app-repo.git
+    cd smart-clicker-frontend
     ```
-
-### Backend
-2. Install dependencies:
-    ```
-    npm install
-    ```
-3. Start the development server:
-    ```
-    npm run dev
-    ```
-
-### Frontend
 2. Install dependencies:
     ```
     npm install
@@ -46,27 +34,6 @@ Ensure you have the following installed:
     ```
 
 ## Configuration
-### Backend
-Modify the environment files for CosmosDB and IoT Hub settings.
-- `.env` (Development)
-- `.env.production` (Production)
-
-Example:
-    
-    FRONTEND_URL=http://localhost:4200
-    BACKEND_PORT=80
-    PRODUCTION=false
-    EXPRESS_SESSION_SECRET=null
-    COSMOS_DB_CONNECTION_STRING=null
-    COSMOS_DB_DATABASE=null
-    AUTHORITY=null
-    ISSUER_VERIFICATION=null
-    TENANT_ID=null
-    CLIENT_ID=null
-    CLIENT_SECRET=null
-    GRAPH_API_ENDPOINT=https://graph.microsoft.com/
-
-### Frontend
 Modify the environment files for API and Entra ID settings.
 - `src/environments/environment.ts` (Development)
 - `src/environments/environment.prod.ts` (Production)
@@ -83,21 +50,6 @@ Example:
     }
 
 ## Project Structure
-### Backend
-```
-src/
- ├── auth/                  # Authentication utilities
- ├── controllers/           # Route controllers
- ├── db/                    # Database utilities
- ├── models/                # Model classes
- ├── services/              # Business logic and data handling
- ├── utils/                 # Utility functions
- └── index.ts               # Main entry point
-.env                        # Environment variables
-swagger.json                # Swagger API definition
-```
-
-### Frontend
 ```
 src/
  ├── app/                   # Angular components & services
@@ -116,8 +68,6 @@ src/
 ```
 
 ## Documentation
-- [Express](https://expressjs.com/)
-- [Azure CosmosDB Docs](https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/sdk-nodejs)
 - [Angular Docs](https://angular.dev/overview)
 - [TailwindCSS Docs](https://tailwindcss.com/docs/installation/framework-guides/angular)
 - [Azure IoT Hub Docs](https://learn.microsoft.com/en-us/azure/iot-hub/)
