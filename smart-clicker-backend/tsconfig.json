@@ -8,11 +8,13 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "types": [
-            "node"
+            "node",
+            "jest"
         ],
     },
     "include": [
-        "src/**/*.ts"
+        "src/**/*.ts",
+        "./jest.config.js"
     ],
     "exclude": [
         "node_modules",
