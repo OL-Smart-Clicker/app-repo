@@ -23,7 +23,6 @@ router.get('/:id',
 
             const response = await roleService.getRoleById(roleId);
             res.status(200).send(response);
-            res.status(200).send({ message: "Role found!" });
         } catch (error) {
             console.error(error);
             res.status(500).send({ error: "Error getting role!" });

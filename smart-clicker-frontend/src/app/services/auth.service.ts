@@ -13,7 +13,6 @@ export class AuthService {
     }
 
     logout() {
-        sessionStorage.removeItem('blobUrl')
         if (this.msalGuardConfig.interactionType === InteractionType.Popup) {
             this.msalService.logoutPopup({
                 postLogoutRedirectUri: '/',
