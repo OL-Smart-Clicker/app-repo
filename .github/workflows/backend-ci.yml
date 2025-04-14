@@ -64,7 +64,7 @@ jobs:
 
       - name: Zip artifact for deployment
         if: ${{ matrix.platform == 'ubuntu-latest' }}
-        run: zip node-app.zip ./smart-clicker-backend/dist -r
+        run: zip node-app.zip ./smart-clicker-backend/dist ./smart-clicker-backend/.env -r
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
