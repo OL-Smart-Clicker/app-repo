@@ -2,8 +2,10 @@ name: CI WVH-Frontend
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - smart-clicker-frontend/**
+      - .github/workflows/frontend-ci.yml
+  pull_request:
     paths:
       - smart-clicker-frontend/**
       - .github/workflows/frontend-ci.yml
@@ -93,9 +95,10 @@ jobs:
 
       - name: Build & Push
         uses: docker/build-push-action@v2
+        working-directory: ./smart-clicker-frontend
         with:
           push: true
-          file: ./smart-clicker-frontend/Dockerfile
+          file: ./Dockerfile
           build-args: |
             version=${{ github.sha }}
           tags: ${{ secrets.ACR_ENDPOINT_STAGING }}/${{ env.IMAGE_NAME }}:${{ github.sha}}
@@ -118,9 +121,10 @@ jobs:
 
       - name: Build & Push
         uses: docker/build-push-action@v2
+        working-directory: ./smart-clicker-frontend
         with:
           push: true
-          file: ./smart-clicker-frontend/Dockerfile
+          file: ./Dockerfile
           build-args: |
             version=${{ github.sha }}
           tags: ${{ secrets.ACR_ENDPOINT_PRODUCTION }}/${{ env.IMAGE_NAME }}:${{ github.sha}}
