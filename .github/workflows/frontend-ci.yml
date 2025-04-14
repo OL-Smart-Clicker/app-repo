@@ -78,7 +78,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   deploy-container-staging:
-    needs: test
+    needs: build
     name: Deploy to Staging
     runs-on: ubuntu-latest
     defaults:
@@ -96,17 +96,21 @@ jobs:
           username: ${{ secrets.ACR_USERNAME_STAGING }}
           password: ${{ secrets.ACR_PASSWORD_STAGING }}
 
+      - name: Debug
+        run: |
+          ls -la
+
       - name: Build & Push
         uses: docker/build-push-action@v2
         with:
           push: true
-          file: ./Dockerfile
+          file: Dockerfile
           build-args: |
             version=${{ github.sha }}
           tags: ${{ secrets.ACR_ENDPOINT_STAGING }}/${{ env.IMAGE_NAME }}:${{ github.sha}}
   
   deploy-container-main:
-    needs: test
+    needs: build
     name: Deploy to Production
     runs-on: ubuntu-latest
     defaults:
@@ -124,11 +128,15 @@ jobs:
           username: ${{ secrets.ACR_USERNAME_PRODUCTION }}
           password: ${{ secrets.ACR_PASSWORD_PRODUCTION }}
 
+      - name: Debug
+        run: |
+          ls -la
+
       - name: Build & Push
         uses: docker/build-push-action@v2
         with:
           push: true
-          file: ./Dockerfile
+          file: Dockerfile
           build-args: |
             version=${{ github.sha }}
           tags: ${{ secrets.ACR_ENDPOINT_PRODUCTION }}/${{ env.IMAGE_NAME }}:${{ github.sha}}
