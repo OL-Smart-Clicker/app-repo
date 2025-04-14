@@ -66,7 +66,7 @@ jobs:
 
       - name: Zip artifact for deployment
         if: ${{ matrix.platform == 'ubuntu-latest' }}
-        run: zip angular-app.zip ./smart-clicker-frontend/dist/smart-clicker-frontend ./smart-clicker-frontend/nginx.conf -r
+        run: zip angular-app.zip ./smart-clicker-frontend/dist/smart-clicker-frontend -r
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
