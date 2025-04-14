@@ -101,6 +101,9 @@ jobs:
     needs: test
     name: Deploy to Staging
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./smart-clicker-backend
     if: github.ref == 'refs/heads/staging' || github.event.pull_request.base.ref == 'staging'
     steps:
       - name: Checkout repository
@@ -115,7 +118,6 @@ jobs:
 
       - name: Build & Push
         uses: docker/build-push-action@v2
-        working-directory: ./smart-clicker-backend
         with:
           push: true
           file: ./Dockerfile
@@ -127,6 +129,9 @@ jobs:
     needs: test
     name: Deploy to Production
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./smart-clicker-backend
     if: github.ref == 'refs/heads/main' || github.event.pull_request.base.ref == 'main'
     steps:
       - name: Checkout repository
@@ -141,7 +146,6 @@ jobs:
 
       - name: Build & Push
         uses: docker/build-push-action@v2
-        working-directory: ./smart-clicker-backend
         with:
           push: true
           file: ./Dockerfile
