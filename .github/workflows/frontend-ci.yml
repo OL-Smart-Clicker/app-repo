@@ -105,7 +105,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          file: ./smart-clicker-frontend/Dockerfile
+          # file: ./smart-clicker-frontend/Dockerfile
+          context: ./smart-clicker-frontend
           build-args: |
             version=${{ github.sha }}
           tags: ${{ secrets.ACR_ENDPOINT_STAGING }}/${{ env.IMAGE_NAME }}:${{ github.sha}}
@@ -137,7 +138,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          file: ./smart-clicker-frontend/Dockerfile
+          # file: ./smart-clicker-frontend/Dockerfile
+          context: ./smart-clicker-frontend
           build-args: |
             version=${{ github.sha }}
           tags: ${{ secrets.ACR_ENDPOINT_PRODUCTION }}/${{ env.IMAGE_NAME }}:${{ github.sha}}
