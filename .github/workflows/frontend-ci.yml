@@ -72,7 +72,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: angular-app
-          path: release.zip
+          path: angular-app.zip
 
   sonarqube:
     needs: build
@@ -113,7 +113,7 @@ jobs:
           name: angular-app
 
       - name: Unzip artifact for deployment
-        run: unzip release.zip
+        run: unzip angular-app.zip
 
       - name: Build & Push
         uses: docker/build-push-action@v2
@@ -150,7 +150,7 @@ jobs:
           name: angular-app
 
       - name: Unzip artifact for deployment
-        run: unzip release.zip
+        run: unzip angular-app.zip
 
       - name: Build & Push
         uses: docker/build-push-action@v2

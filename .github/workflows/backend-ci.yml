@@ -70,7 +70,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: release.zip
+          path: node-app.zip
 
   test:
     needs: build
@@ -133,7 +133,7 @@ jobs:
           name: node-app
 
       - name: Unzip artifact for deployment
-        run: unzip release.zip
+        run: unzip node-app.zip
 
       - name: Build & Push
         uses: docker/build-push-action@v2
@@ -170,7 +170,7 @@ jobs:
           name: node-app
 
       - name: Unzip artifact for deployment
-        run: unzip release.zip
+        run: unzip node-app.zip
 
       - name: Build & Push
         uses: docker/build-push-action@v2
