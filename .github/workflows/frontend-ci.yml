@@ -79,7 +79,7 @@ jobs:
     needs: test
     name: Deploy to Staging
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/staging' || github.event.pull_request.base.ref == 'staging'\
+    if: github.ref == 'refs/heads/staging' || github.event.pull_request.base.ref == 'staging'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -104,7 +104,7 @@ jobs:
     needs: test
     name: Deploy to Production
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.event.pull_request.base.ref == 'main'\
+    if: github.ref == 'refs/heads/main' || github.event.pull_request.base.ref == 'main'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
