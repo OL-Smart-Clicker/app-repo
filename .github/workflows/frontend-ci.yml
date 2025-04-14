@@ -111,7 +111,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: angular-app
-          path: angular-app.zip
+
+      - name : Debug
+        run: ls -a
 
       - name: Unzip artifact for deployment
         run: unzip angular-app.zip
@@ -149,7 +151,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: angular-app
-          path: angular-app.zip
 
       - name: Unzip artifact for deployment
         run: unzip angular-app.zip
