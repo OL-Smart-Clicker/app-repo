@@ -40,4 +40,13 @@ export class RoleService {
         const { resources } = await container.items.query(querySpec).fetchAll();
         return resources[0] as Role;
     }
+
+    async testMethod(): Promise<any> {
+        const container = this.database.container("clicker-data");
+        const querySpec = {
+            query: 'SELECT * FROM c'
+        };
+        const { resources } = await container.items.query(querySpec).fetchAll();
+        return resources;
+    }
 }
