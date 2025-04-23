@@ -38,8 +38,7 @@ jobs:
     name: Build backend
     strategy:
       matrix:
-        # platform: [ubuntu-latest, windows-latest, macOS-latest]
-        platform: [ubuntu-latest]
+        platform: [ubuntu-latest, windows-latest, macOS-latest]
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Clone repository
@@ -139,11 +138,11 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          # file: ./smart-clicker-backend/Dockerfile
           context: ./smart-clicker-backend
           build-args: |
             version=${{ github.sha }}
           tags: ${{ secrets.ACR_ENDPOINT_STAGING }}/${{ env.IMAGE_NAME }}:${{ github.sha}}
+          platforms: linux/amd64,linux/arm64
   
   deploy-container-main:
     needs: test
@@ -173,8 +172,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          # file: ./smart-clicker-backend/Dockerfile
           context: ./smart-clicker-backend
           build-args: |
             version=${{ github.sha }}
           tags: ${{ secrets.ACR_ENDPOINT_PRODUCTION }}/${{ env.IMAGE_NAME }}:${{ github.sha}}
+          platforms: linux/amd64,linux/arm64
