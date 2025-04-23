@@ -122,7 +122,7 @@ jobs:
           build-args: |
             version=${{ github.sha }}
           tags: ${{ secrets.ACR_ENDPOINT_STAGING }}/${{ env.IMAGE_NAME }}:${{ github.sha}}
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm64
   
   deploy-container-main:
     needs: build
@@ -156,4 +156,4 @@ jobs:
           build-args: |
             version=${{ github.sha }}
           tags: ${{ secrets.ACR_ENDPOINT_PRODUCTION }}/${{ env.IMAGE_NAME }}:${{ github.sha}}
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm64
