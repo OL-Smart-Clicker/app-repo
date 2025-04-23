@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM --platform=linux/arm64 nginx:alpine
 
 # Set the working directory inside the container
 WORKDIR /usr/share/nginx/html

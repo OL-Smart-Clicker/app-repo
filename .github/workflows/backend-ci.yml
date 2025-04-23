@@ -36,10 +36,7 @@ jobs:
   build:
     needs: lint
     name: Build backend
-    strategy:
-      matrix:
-        platform: [ubuntu-latest, windows-latest, macOS-latest]
-    runs-on: ${{ matrix.platform }}
+    runs-on: ubuntu-latest
     steps:
       - name: Clone repository
         uses: actions/checkout@v4
@@ -62,7 +59,6 @@ jobs:
         run: cd smart-clicker-backend && npm run build
 
       - name: Zip artifact for deployment
-        if: ${{ matrix.platform == 'ubuntu-latest' }}
         run: zip node-app.zip ./smart-clicker-backend/dist ./smart-clicker-backend/.env -r
 
       - name: Upload artifact for deployment job
@@ -134,6 +130,14 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip node-app.zip
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: all
+
       - name: Build & Push
         uses: docker/build-push-action@v2
         with:
@@ -167,6 +171,14 @@ jobs:
 
       - name: Unzip artifact for deployment
         run: unzip node-app.zip
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: all
 
       - name: Build & Push
         uses: docker/build-push-action@v2
