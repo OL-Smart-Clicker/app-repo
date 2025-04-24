@@ -4,12 +4,20 @@ import { DefaultAzureCredential } from '@azure/identity';
 
 dotenv.config();
 
-const credential = new DefaultAzureCredential();
+const production = process.env.PRODUCTION === "true";
+let client: CosmosClient | null = null;
 
-const client = new CosmosClient({
-    endpoint: process.env.COSMOS_DB_ENDPOINT!,
-    aadCredentials: credential
-});
+if (production) {
+    const credential = new DefaultAzureCredential();
+
+    client = new CosmosClient({
+        endpoint: process.env.COSMOS_DB_ENDPOINT!,
+        aadCredentials: credential
+    });
+}
+else {
+    client = new CosmosClient(process.env.COSMOS_DB_CONNECTION_STRING!);
+}
 
 const database: Database = client.database(process.env.COSMOS_DB_DATABASE!);
 

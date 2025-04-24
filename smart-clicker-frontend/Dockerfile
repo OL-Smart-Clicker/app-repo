@@ -10,8 +10,8 @@ RUN rm -rf ./*
 COPY dist/smart-clicker-frontend/ .
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 4200 for the Nginx server
-EXPOSE 4200
+# Expose port 80 for the Nginx server
+EXPOSE 80
 
 # Start Nginx server
 CMD ["nginx", "-g", "daemon off;"]
