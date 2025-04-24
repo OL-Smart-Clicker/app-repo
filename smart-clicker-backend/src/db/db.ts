@@ -5,7 +5,7 @@ import { DefaultAzureCredential } from '@azure/identity';
 dotenv.config();
 
 const production = process.env.PRODUCTION === "true";
-var client: CosmosClient | null = null;
+let client: CosmosClient | null = null;
 
 if (production) {
     const credential = new DefaultAzureCredential();
