@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-app
+  namespace: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-app
+  template:
+    metadata:
+      labels:
+        app: backend-app
+        azure.workload.identity/use: "true"
+    spec:
+      serviceAccountName: backend-sa
+      containers:
+      - name: backend-app
+        image: wvhacrstaging.azurecr.io/backend:{{ .Values.image_tag }}
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        ports:
+        - name: backend-http
+          containerPort: 80
+      tolerations:
+      - key: "kubernetes.azure.com/scalesetpriority"
+        operator: "Equal"
+        value: "spot"
+        effect: "NoSchedule"
+      nodeSelector:
+        kubernetes.azure.com/scalesetpriority: "spot"
