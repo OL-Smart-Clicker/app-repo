@@ -21,6 +21,7 @@ function authorize(requiredPermissions: Permission[]) {
             }
 
             const decodedToken = jwt.decode(token, { complete: true });
+
             if (!decodedToken || !decodedToken.header || !decodedToken.header.kid) {
                 res.status(401).send({ error: 'UNAUTHORIZED' });
                 return;
@@ -58,7 +59,7 @@ function authorize(requiredPermissions: Permission[]) {
             }
 
             const requiredBitmask = calculateBitmask(requiredPermissions);
-            const userPermissionsBitmask = role.Permissions;
+            const userPermissionsBitmask = role.permissions;
 
             if ((userPermissionsBitmask & requiredBitmask) !== requiredBitmask) {
                 res.status(403).send({ error: 'FORBIDDEN' });

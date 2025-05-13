@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 import roleController from './controllers/roleController';
+import clickerController from './controllers/clickerController';
 
 dotenv.config();
 const production = process.env.PRODUCTION === "true";
@@ -51,6 +52,7 @@ app.get('/api-docs', (req, res) => {
 });
 
 app.use('/role', roleController);
+app.use('/clicker-data', clickerController);
 
 app.use((req, res, next) => {
     res.status(404).send("Not Found");

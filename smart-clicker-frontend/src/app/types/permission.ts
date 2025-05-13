@@ -4,5 +4,6 @@ export enum Permission {
     QuestionSet = 1 << 2,
     QuestionEdit = 1 << 3,
     QuestionDelete = 1 << 4,
-    DataView = 1 << 5,
+    DataViewTenant = 1 << 5,
+    DataViewAll = 1 << 6,
 }

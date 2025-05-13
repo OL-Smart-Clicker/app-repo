@@ -10,9 +10,9 @@ export class RoleService {
     }
 
     async getUserRole(id: string): Promise<string> {
-        const userContainer = this.database.container("UsersRoles");
+        const userContainer = this.database.container("users-roles");
         const userQuerySpec = {
-            query: 'SELECT * FROM UsersRoles u WHERE u.UserId = @userId',
+            query: 'SELECT * FROM c WHERE u.userId = @userId',
             parameters: [
                 {
                     name: '@userId',
@@ -22,14 +22,14 @@ export class RoleService {
         };
         const { resources } = await userContainer.items.query(userQuerySpec).fetchAll();
         if (resources.length === 0) return '';
-        if (resources[0].RoleId === undefined) return '';
-        return resources[0].RoleId;
+        if (resources[0].roleId === undefined) return '';
+        return resources[0].roleId;
     }
 
     async getRoleById(id: string): Promise<Role> {
-        const container = this.database.container("Roles");
+        const container = this.database.container("roles");
         const querySpec = {
-            query: 'SELECT * FROM Roles r WHERE r.id = @roleId',
+            query: 'SELECT * FROM c WHERE r.id = @roleId',
             parameters: [
                 {
                     name: '@roleId',
@@ -39,14 +39,5 @@ export class RoleService {
         };
         const { resources } = await container.items.query(querySpec).fetchAll();
         return resources[0] as Role;
-    }
-
-    async testMethod(): Promise<any> {
-        const container = this.database.container("clicker-data");
-        const querySpec = {
-            query: 'SELECT * FROM c'
-        };
-        const { resources } = await container.items.query(querySpec).fetchAll();
-        return resources;
     }
 }

@@ -106,9 +106,6 @@ jobs:
         with:
           name: angular-app
 
-      - name : Debug
-        run: ls -a
-
       - name: Unzip artifact for deployment
         run: unzip angular-app.zip
 

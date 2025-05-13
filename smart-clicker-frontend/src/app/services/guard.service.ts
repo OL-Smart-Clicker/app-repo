@@ -21,7 +21,7 @@ export class GuardService {
             const role: Role = await this.roleServ.getUserRole(userId);
 
             const requiredBitmask = calculateBitmask([permission]);
-            const userPermissionsBitmask = role.Permissions;
+            const userPermissionsBitmask = role.permissions;
 
             if ((userPermissionsBitmask & requiredBitmask) === requiredBitmask) {
                 return true;
@@ -44,7 +44,7 @@ export class GuardService {
             const role: Role = await this.roleServ.getUserRole(userId);
 
             const requiredBitmask = calculateBitmask([permission]);
-            const userPermissionsBitmask = role.Permissions;
+            const userPermissionsBitmask = role.permissions;
 
             return (userPermissionsBitmask & requiredBitmask) === requiredBitmask;
         }
