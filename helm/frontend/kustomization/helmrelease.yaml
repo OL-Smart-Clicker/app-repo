@@ -1,0 +1,15 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: frontend
+  namespace: frontend
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: ../chart
+      sourceRef:
+        kind: GitRepository
+        name: wvh-staging-flux-app-config
+        namespace: flux-system
+      interval: 1m
