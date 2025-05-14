@@ -24,7 +24,7 @@ spec:
             cpu: "500m"
             memory: "512Mi"
         ports:
-        - name: frontend-http
+        - name: http-frontend
           containerPort: 80
       tolerations:
       - key: "kubernetes.azure.com/scalesetpriority"
