@@ -26,21 +26,24 @@ export class LayoutComponent implements OnInit, AfterViewInit {
             path: '/home',
             name: 'Home',
             icon: icons.heroHome,
-            permission: Permission.QuestionViewToday,
+            // permission: Permission.QuestionViewToday,
+            permission: '',
             order: 1
         },
         {
             path: '/qotd',
             name: 'Question of the Day',
             icon: icons.heroQuestionMarkCircle,
-            permission: Permission.QuestionViewAll,
+            // permission: Permission.QuestionViewAll,
+            permission: '',
             order: 2
         },
         {
             path: '/data',
             name: 'Data Overview',
             icon: icons.heroCircleStack,
-            permission: Permission.DataViewTenant,
+            // permission: Permission.DataViewTenant,
+            permission: '',
             order: 3
         },
     ]
