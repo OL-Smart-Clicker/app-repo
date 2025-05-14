@@ -3,6 +3,7 @@ import { AuthService } from "../../services/auth.service";
 import * as icons from '@ng-icons/heroicons/outline'
 import { GuardService } from "../../services/guard.service";
 import { Router } from "@angular/router";
+import { Permission } from "../../types/permission";
 
 @Component({
     selector: 'app-layout',
@@ -25,21 +26,21 @@ export class LayoutComponent implements OnInit, AfterViewInit {
             path: '/home',
             name: 'Home',
             icon: icons.heroHome,
-            permission: '',
+            permission: Permission.QuestionViewToday,
             order: 1
         },
         {
             path: '/qotd',
             name: 'Question of the Day',
             icon: icons.heroQuestionMarkCircle,
-            permission: '',
+            permission: Permission.QuestionViewAll,
             order: 2
         },
         {
             path: '/data',
             name: 'Data Overview',
             icon: icons.heroCircleStack,
-            permission: '',
+            permission: Permission.DataViewTenant,
             order: 3
         },
     ]
@@ -80,12 +81,8 @@ export class LayoutComponent implements OnInit, AfterViewInit {
             else {
                 this.navItems.push(route);
             }
+            this.navItems.sort((a, b) => a.order - b.order);
         })
-        this.navItems.sort((a, b) => a.order - b.order);
-        // setTimeout(() => {
-        //     this.loading = false;
-        // }, 1000)
-        // this.loading = false;
     }
 
     ngAfterViewInit(): void {

@@ -30,17 +30,4 @@ router.get('/:id',
     }
 );
 
-router.get('/',
-    // authorize([]),
-    async (req: Request, res: Response): Promise<void> => {
-        try {
-            const response = await roleService.testMethod();
-            res.status(200).send(response);
-        } catch (error) {
-            console.error(error);
-            res.status(500).send({ message: "Error!", error: error });
-        }
-    }
-);
-
 export default router;

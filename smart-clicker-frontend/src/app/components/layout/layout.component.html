@@ -36,7 +36,7 @@
             <div class="p-4">
                 <button *ngFor="let item of navItems" [routerLink]="item.path"
                     [ngClass]="item.path === getRoute() ? 'bg-primary-light-blue' : 'bg-transparent'"
-                    class="transition-colors duration-300 transform hover:bg-primary-light-blue rounded-md text-primary-blue w-full h-12 mb-2">
+                    class="cursor-pointer transition-colors duration-300 transform hover:bg-primary-light-blue rounded-md text-primary-blue w-full h-12 mb-2">
                     <div class="py-1 ml-3 flex align-middle">
                         <ng-icon [svg]="item.icon" />
                         <p *ngIf="textVisible" class="ml-4">{{item.name}}</p>
@@ -46,7 +46,7 @@
             <div class="absolute bottom-0 w-full p-4">
                 <button [routerLink]="'/docs'"
                     [ngClass]="'/docs' === getRoute() ? 'bg-primary-light-blue' : 'bg-transparent'"
-                    class="transition-colors duration-300 transform hover:bg-primary-light-blue rounded-md text-primary-blue w-full h-12 mb-2">
+                    class="cursor-pointer transition-colors duration-300 transform hover:bg-primary-light-blue rounded-md text-primary-blue w-full h-12 mb-2">
                     <div class="py-1 ml-3 flex align-middle">
                         <ng-icon [svg]="icons.heroDocumentText" />
                         <p *ngIf="textVisible" class="ml-4">API Docs</p>
@@ -58,7 +58,8 @@
             [ngClass]="sidebarVisible ? 'ml-64 delay-100 duration-300 ease-out' : 'ml-20 delay-100 duration-300 ease-out'">
             <div
                 class="bg-white h-16 flex sticky top-0 px-4 text-primary-blue justify-between align-middle shadow-md z-10">
-                <button class="my-2 p-2 transition-colors duration-300 transform hover:bg-primary-light-blue rounded-md"
+                <button
+                    class="cursor-pointer my-2 p-2 transition-colors duration-300 transform hover:bg-primary-light-blue rounded-md"
                     (click)="toggleSidebar()">
                     <div class="py-1 flex align-middle">
                         <ng-icon [svg]="icons.heroBars3" />
@@ -67,7 +68,7 @@
                 </button>
                 <div class="inline-block mr-2" (focusout)="onFocusOut($event)">
                     <button
-                        class="my-2 p-2 transition-colors duration-300 transform hover:bg-primary-light-blue rounded-md"
+                        class="cursor-pointer my-2 p-2 transition-colors duration-300 transform hover:bg-primary-light-blue rounded-md"
                         (click)="toggleDropdown()">
                         <div class="py-1 flex align-middle">
                             <p class="mr-2">Profile</p>
