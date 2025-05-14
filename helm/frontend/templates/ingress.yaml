@@ -28,8 +28,8 @@ spec:
     - workplacevitalityhubstaging.nl
     secretName: tls-secret
   rules:
-  - host: workplacevitalityhubstaging.nl
-    http:
+  # - host: workplacevitalityhubstaging.nl
+  - http:
       paths:
       - path: /
         pathType: Prefix
