@@ -7,19 +7,19 @@ import { Role } from '../types/role';
     providedIn: 'root'
 })
 
-export class RoleService {
+export class ClickerService {
 
     constructor(private authService: AuthService) {
     }
 
-    async getUserRole(id: string): Promise<Role> {
+    async getClickerData(): Promise<any> {
         const token = await this.authService.getToken();
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         };
-        const response = await axios.get(`/api/role/${id}`, config)
-        return response.data as Role;
+        const response = await axios.get(`/api/clicker-data`, config)
+        return response.data;
     }
 }
