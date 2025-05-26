@@ -12,11 +12,9 @@ export class HomeComponent implements OnInit {
     constructor(private guardServ: GuardService, private clickerServ: ClickerService) { }
 
     icons = icons;
-    clickerData: any;
 
     async ngOnInit(): Promise<void> {
         const response = await this.clickerServ.getClickerData();
-        this.clickerData = response;
         console.log(response);
     }
 
