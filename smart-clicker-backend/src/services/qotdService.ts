@@ -17,7 +17,7 @@ export class QotdService {
   }
 
   async getQotdsForOffice(officeSpaceId: string): Promise<Qotd[]> {
-    const userQuerySpec = {
+    const query = {
       query: "SELECT * FROM c WHERE c.officeSpaceId = @officeSpaceId",
       parameters: [
         {
@@ -26,16 +26,16 @@ export class QotdService {
         },
       ],
     };
-    const { resources } = await this.container.items
-      .query(userQuerySpec)
-      .fetchAll();
+    const { resources } = await this.container.items.query(query).fetchAll();
     return resources as Qotd[];
   }
 
   async getQotdTodayForOffice(officeSpaceId: string): Promise<Qotd | null> {
-    const userQuerySpec = {
+    const today = new Date();
+    const isoDate = today.toISOString().split("T")[0];
+    const query = {
       query:
-        "SELECT * FROM c WHERE c.officeSpaceId = @officeSpaceId AND c.date = @date",
+        "SELECT * FROM c WHERE c.officeSpaceId = @officeSpaceId AND STARTSWITH(c.date, @date)",
       parameters: [
         {
           name: "@officeSpaceId",
@@ -43,13 +43,11 @@ export class QotdService {
         },
         {
           name: "@date",
-          value: new Date().toISOString().split("T")[0], // Format date as YYYY-MM-DD
+          value: isoDate,
         },
       ],
     };
-    const { resources } = await this.container.items
-      .query(userQuerySpec)
-      .fetchAll();
+    const { resources } = await this.container.items.query(query).fetchAll();
     if (resources.length === 0) return null;
     return resources[0] as Qotd;
   }
@@ -70,5 +68,19 @@ export class QotdService {
       .replace(qotd);
     if (!resource) return null;
     return resource as Qotd;
+  }
+
+  async getQotdsForDate(date: Date): Promise<Qotd[]> {
+    const query = {
+      query: "SELECT * FROM c WHERE c.date = @date",
+      parameters: [
+        {
+          name: "@date",
+          value: date.toISOString(),
+        },
+      ],
+    };
+    const { resources } = await this.container.items.query(query).fetchAll();
+    return resources as Qotd[];
   }
 }

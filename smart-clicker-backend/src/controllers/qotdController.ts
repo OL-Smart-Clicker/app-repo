@@ -143,4 +143,23 @@ router.put(
   }
 );
 
+router.get(
+  "/date/:date",
+  authorize([Permission.QuestionViewAll]),
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const date = new Date(req.params.date);
+      if (isNaN(date.getTime())) {
+        res.status(400).send({ error: "BAD REQUEST" });
+        return;
+      }
+      const qotds = await qotdService.getQotdsForDate(date);
+      res.status(200).send(qotds);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Error fetching QOTDs for date", error });
+    }
+  }
+);
+
 export default router;
