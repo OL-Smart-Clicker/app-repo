@@ -10,9 +10,15 @@ export class ClickerService {
     this.container = this.database.container("clicker-data");
   }
 
-  async getClickerData(): Promise<any> {
+  async getClickerData(officeSpaceId: string): Promise<any> {
     const querySpec = {
-      query: "SELECT * FROM c",
+      query: "SELECT * FROM c WHERE c.officeSpaceId = @officeSpaceId",
+      parameters: [
+        {
+          name: "@officeSpaceId",
+          value: officeSpaceId,
+        },
+      ]
     };
     const { resources } = await this.container.items
       .query(querySpec)

@@ -93,7 +93,7 @@ export class QotdComponent implements OnInit {
   }
 
   async getQotds() {
-    await this.qotdService.getQotdsForOffice("Office_A1").then((qotds) => {
+    await this.qotdService.getQotdsForOffice("f17120a9-4d72-402a-812e-6cd2b7482d6a").then((qotds) => {
       this.qotds = qotds.map((qotd) => {
         return {
           id: qotd.id,
@@ -149,6 +149,10 @@ export class QotdComponent implements OnInit {
 
   async deleteEvent(eventToDelete: CalendarEvent): Promise<void> {
     try {
+      if (eventToDelete.start < new Date()) {
+        this.toastService.error("You cannot delete a QOTD in the past.");
+        return;
+      }
       await this.qotdService.deleteQotd(
         eventToDelete.id as string,
         eventToDelete.meta.officeSpaceId
@@ -254,7 +258,7 @@ export class QotdComponent implements OnInit {
       id: crypto.randomUUID(),
       question: this.addForm.value.question,
       date: new Date(this.addForm.value.date),
-      officeSpaceId: "Office_A1", // or get from context
+      officeSpaceId: "f17120a9-4d72-402a-812e-6cd2b7482d6a",
     };
     try {
       const response = await this.qotdService.createQotd(newQotd);

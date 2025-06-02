@@ -37,4 +37,8 @@ export class AuthService {
     getUserId() {
         return this.getAllAccounts()[0].localAccountId;
     }
+
+    getTenantId() {
+        return this.getAllAccounts()[0].tenantId;
+    }
 }

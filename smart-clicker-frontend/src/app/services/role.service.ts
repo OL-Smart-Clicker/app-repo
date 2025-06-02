@@ -7,7 +7,7 @@ import { Role } from "../types/role";
   providedIn: "root",
 })
 export class RoleService {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   private async getAuthConfig() {
     const token = await this.authService.getToken();
@@ -18,10 +18,32 @@ export class RoleService {
     };
   }
 
-  async getUserRole(id: string): Promise<Role> {
-    const token = await this.authService.getToken();
+  async getUserRole(): Promise<Role> {
     const config = await this.getAuthConfig();
-    const response = await axios.get(`/api/role/${id}`, config);
+    const response = await axios.get(`api/role/self`, config);
     return response.data as Role;
+  }
+
+
+  async createRole(role: Role): Promise<Role> {
+    const config = await this.getAuthConfig();
+    const response = await axios.post(`api/role`, role, config);
+    return response.data as Role;
+  }
+
+  async updateRole(role: Role): Promise<Role> {
+    const config = await this.getAuthConfig();
+    const response = await axios.put(`api/role/${role.id}`, role, config);
+    return response.data as Role;
+  }
+  async assignRoleToUser(userId: string, roleId: string): Promise<void> {
+    const config = await this.getAuthConfig();
+    await axios.post(`api/role/assign`, { userId, roleId }, config);
+  }
+
+  async getAllRoles(): Promise<Role[]> {
+    const config = await this.getAuthConfig();
+    const response = await axios.get(`api/role`, config);
+    return response.data as Role[];
   }
 }

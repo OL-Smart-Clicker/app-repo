@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
 import axios from "axios";
 import { AuthService } from "./auth.service";
-import { Role } from "../types/role";
+import { User } from "../types/user";
 
 @Injectable({
   providedIn: "root",
 })
-export class ClickerService {
+export class UserService {
   constructor(private authService: AuthService) { }
 
   private async getAuthConfig() {
@@ -16,12 +16,14 @@ export class ClickerService {
         Authorization: `Bearer ${token}`,
       },
     };
+  }  async assignRoleToUser(userId: string, roleId: string): Promise<void> {
+    const config = await this.getAuthConfig();
+    await axios.post(`api/role/assign`, { userId, roleId }, config);
   }
 
-  async getClickerData(officeSpaceId: string): Promise<any> {
-    const token = await this.authService.getToken();
+  async getAllUsers(): Promise<User[]> {
     const config = await this.getAuthConfig();
-    const response = await axios.get(`/api/clicker-data/${officeSpaceId}`, config);
-    return response.data;
+    const response = await axios.get(`api/user`, config);
+    return response.data as User[];
   }
 }
