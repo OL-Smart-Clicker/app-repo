@@ -7,28 +7,18 @@
   <div class="flex">
     <div class="btn-group">
       <button
-        class="px-4 py-2 rounded-l-lg font-semibold text-primary-white bg-primary-blue border border-primary-blue hover:bg-secondary-blue transition-colors duration-200 shadow-md focus:outline-none focus:ring-2 focus:ring-primary-blue-2"
-        mwlCalendarPreviousView
-        [view]="view"
-        [(viewDate)]="viewDate"
-        (viewDateChange)="closeOpenMonthViewDay()"
-      >
+        class="px-4 py-2 rounded-l-lg font-semibold text-primary-white bg-primary-blue border border-primary-blue hover:bg-secondary-blue transition-colors duration-200 shadow-md cursor-pointer"
+        mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
         Previous
       </button>
       <button
-        class="px-4 py-2 font-semibold text-primary-blue bg-primary-white border border-primary-blue hover:bg-primary-light-blue transition-colors duration-200 shadow-md focus:outline-none focus:ring-2 focus:ring-primary-blue-2"
-        mwlCalendarToday
-        [(viewDate)]="viewDate"
-      >
+        class="px-4 py-2 font-semibold text-primary-blue bg-primary-white border border-primary-blue hover:bg-primary-light-blue transition-colors duration-200 shadow-md cursor-pointer"
+        mwlCalendarToday [(viewDate)]="viewDate">
         Today
       </button>
       <button
-        class="px-4 py-2 rounded-r-lg font-semibold text-primary-white bg-primary-blue border border-primary-blue hover:bg-secondary-blue transition-colors duration-200 shadow-md focus:outline-none focus:ring-2 focus:ring-primary-blue-2"
-        mwlCalendarNextView
-        [view]="view"
-        [(viewDate)]="viewDate"
-        (viewDateChange)="closeOpenMonthViewDay()"
-      >
+        class="px-4 py-2 rounded-r-lg font-semibold text-primary-white bg-primary-blue border border-primary-blue hover:bg-secondary-blue transition-colors duration-200 shadow-md cursor-pointer"
+        mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="closeOpenMonthViewDay()">
         Next
       </button>
     </div>
@@ -36,101 +26,46 @@
 </div>
 <br />
 <div>
-  <mwl-calendar-month-view
-    [weekStartsOn]="1"
-    [viewDate]="viewDate"
-    [events]="qotds"
-    [activeDayIsOpen]="activeDayIsOpen"
-    (dayClicked)="dayClicked($event.day)"
-    (eventClicked)="handleEdit($event.event, true)"
-    (eventTimesChanged)="eventTimesChanged($event)"
-    [eventActionsTemplate]="customActionTemplate"
-  >
+  <mwl-calendar-month-view [weekStartsOn]="1" [viewDate]="viewDate" [events]="qotds" [activeDayIsOpen]="activeDayIsOpen"
+    (dayClicked)="dayClicked($event.day)" (eventClicked)="handleEdit($event.event, true)"
+    (eventTimesChanged)="eventTimesChanged($event)" [eventActionsTemplate]="customActionTemplate">
   </mwl-calendar-month-view>
 </div>
 
-<ng-template
-  #customActionTemplate
-  let-day="day"
-  let-locale="locale"
-  let-event="event"
->
+<ng-template #customActionTemplate let-day="day" let-locale="locale" let-event="event">
   <span class="hover:text-amber-300">
-    <ng-icon
-      [svg]="icons.heroPencil"
-      [size]="'1.1rem'"
-      class="pt-0.5 mr-1 cursor-pointer"
-      (click)="handleEdit(event, true)"
-    />
+    <ng-icon [svg]="icons.heroPencil" [size]="'1.1rem'" class="pt-0.5 mr-1 cursor-pointer"
+      (click)="handleEdit(event, true)" />
   </span>
   <span class="hover:text-red-500">
-    <ng-icon
-      [svg]="icons.heroTrash"
-      [size]="'1.1rem'"
-      class="pt-0.5 cursor-pointer"
-      (click)="deleteEvent(event)"
-    />
+    <ng-icon [svg]="icons.heroTrash" [size]="'1.1rem'" class="pt-0.5 cursor-pointer" (click)="deleteEvent(event)" />
   </span>
 </ng-template>
 
-<app-modal
-  *ngIf="editModal && editingQotd"
-  [title]="'Edit Question of the Day'"
-  [confirmLabel]="'Save'"
-  [cancelLabel]="'Cancel'"
-  (confirm)="onEdit(editingQotd)"
-  (cancel)="onDiscard()"
->
+<app-modal *ngIf="editModal && editingQotd" [title]="'Edit Question of the Day'" [confirmLabel]="'Save'"
+  [cancelLabel]="'Cancel'" (confirm)="onEdit(editingQotd)" (cancel)="onDiscard()">
   <form id="editForm" [formGroup]="editForm">
     <div class="mb-4">
       <label class="block mb-1 font-semibold">Question</label>
-      <input
-        formControlName="question"
-        class="w-full border rounded px-2 py-1"
-        name="question"
-        required
-      />
+      <input formControlName="question" class="w-full border rounded px-2 py-1" name="question" required />
     </div>
     <div class="mb-4">
       <label class="block mb-1 font-semibold">Date</label>
-      <input
-        formControlName="date"
-        class="w-full border rounded px-2 py-1"
-        type="date"
-        name="date"
-        required
-      />
+      <input formControlName="date" class="w-full border rounded px-2 py-1" type="date" name="date" required />
     </div>
   </form>
 </app-modal>
 
-<app-modal
-  *ngIf="addModal"
-  [title]="'Add QOTD'"
-  [confirmLabel]="'Add'"
-  [cancelLabel]="'Cancel'"
-  (confirm)="onAdd()"
-  (cancel)="onDiscard()"
->
+<app-modal *ngIf="addModal" [title]="'Add QOTD'" [confirmLabel]="'Add'" [cancelLabel]="'Cancel'" (confirm)="onAdd()"
+  (cancel)="onDiscard()">
   <form id="addForm" [formGroup]="addForm">
     <div class="mb-4">
       <label class="block mb-1 font-semibold">Question</label>
-      <input
-        formControlName="question"
-        class="w-full border rounded px-2 py-1"
-        name="question"
-        required
-      />
+      <input formControlName="question" class="w-full border rounded px-2 py-1" name="question" required />
     </div>
     <div class="mb-4">
       <label class="block mb-1 font-semibold">Date</label>
-      <input
-        formControlName="date"
-        class="w-full border rounded px-2 py-1"
-        type="date"
-        name="date"
-        required
-      />
+      <input formControlName="date" class="w-full border rounded px-2 py-1" type="date" name="date" required />
     </div>
   </form>
 </app-modal>

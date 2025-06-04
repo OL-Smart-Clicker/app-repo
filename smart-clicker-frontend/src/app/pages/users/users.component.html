@@ -1,0 +1,228 @@
+<div>
+    <div class="container mx-auto p-3 w-full">
+        <!-- Header -->
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-900 mb-1">User Management</h1>
+            <p class="text-gray-600 text-sm">Manage users and their role assignments</p>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="flex justify-center items-center py-12">
+            <app-spinner></app-spinner>
+        </div> <!-- Main Content -->
+        <div *ngIf="!loading" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Left Panel: Users List -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <!-- Search -->
+                    <div class="mb-4">
+                        <div class="flex gap-2 mb-3">
+                            <div class="flex-1 relative">
+                                <input type="text" [(ngModel)]="searchTerm" (input)="onSearchChange()"
+                                    placeholder="Search users..."
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                                <ng-icon [svg]="icons.heroMagnifyingGlass"
+                                    class="absolute left-3 top-2.5 h-5 w-5 text-gray-400"></ng-icon>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Users List -->
+                    <div class="max-h-3/4 overflow-y-auto scrollbar-thin">
+                        <div class="space-y-2 pr-2">
+                            <div *ngFor="let user of filteredUsers" (click)="selectUser(user)"
+                                [class]="'p-4 border rounded-lg cursor-pointer transition-all duration-200 ' + 
+                         (selectedUser?.id === user.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50')">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <h3 class="font-medium text-gray-900">{{ user.displayName || user.givenName + '
+                                            ' + user.surname }}</h3>
+                                        <p class="text-sm text-gray-500 mt-1">{{ user.userPrincipalName }}</p>
+                                        <p class="text-xs text-blue-600 mt-1">{{ getRoleName(user) }}</p>
+                                    </div>
+                                    <div class="flex gap-1 ml-2">
+                                        <button (click)="startAssignRole(user); $event.stopPropagation()"
+                                            class="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                                            title="Assign role">
+                                            <ng-icon [svg]="icons.heroUserPlus" class="h-4 w-4"></ng-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Empty State -->
+                            <div *ngIf="filteredUsers.length === 0" class="text-center py-8">
+                                <ng-icon [svg]="icons.heroUsers" class="h-12 w-12 text-gray-300 mx-auto mb-4"></ng-icon>
+                                <p class="text-gray-500">No users found</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- Right Panel: User Details/Role Assignment -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-md p-4">
+
+                    <!-- Role Assignment Form -->
+                    <div *ngIf="isAssignRoleMode && selectedUser">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-2">
+                                Assign Role to User
+                            </h2>
+                            <p class="text-gray-600">
+                                Assign a role to {{ selectedUser.displayName || selectedUser.givenName + ' ' +
+                                selectedUser.surname }}
+                            </p>
+                        </div>
+
+                        <form (ngSubmit)="assignRole()" class="space-y-6"> <!-- User Info -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h3 class="text-base font-medium text-gray-900 mb-3">User Information</h3>
+                                <p class="text-base text-gray-600">
+                                    <span class="font-medium">Name:</span> {{ selectedUser.displayName ||
+                                    selectedUser.givenName + ' ' + selectedUser.surname }}
+                                </p>
+                                <p class="text-base text-gray-600">
+                                    <span class="font-medium">Email:</span> {{ selectedUser.userPrincipalName }}
+                                </p>
+                                <p class="text-base text-gray-600">
+                                    <span class="font-medium">Current Role:</span> {{ getRoleName(selectedUser) }}
+                                </p>
+                            </div>
+
+                            <!-- Role Selection -->
+                            <div>
+                                <label for="roleSelect" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Select Role
+                                </label>
+                                <select id="roleSelect" [(ngModel)]="selectedRoleId" name="roleSelect" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <!-- <option value="">No Role</option> -->
+                                    <option *ngFor="let role of roles" [value]="role.id">
+                                        {{ role.roleName }} ({{ getTotalPermissionsCount(role.permissions) }}
+                                        permissions)
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Selected Role Preview -->
+                            <ng-container *ngIf="selectedRoleId as roleId">
+                                <ng-container *ngIf="selectedRole">
+                                    <div class="bg-blue-50 p-4 rounded-lg">
+                                        <h4 class="font-medium text-blue-900 mb-2">Selected Role Permissions</h4>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2"> <span
+                                                *ngFor="let permission of getPermissionNames(selectedRole.permissions)"
+                                                class="inline-flex items-center px-2 py-1 rounded-md text-sm font-medium bg-blue-100 text-blue-800">
+                                                {{ permission }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+
+                            <!-- Form Actions -->
+                            <div class="flex gap-3 pt-4">
+                                <button type="submit" [disabled]="roleAssignLoading"
+                                    class="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center gap-2">
+                                    <app-spinner *ngIf="roleAssignLoading" class="w-4 h-4"></app-spinner>
+                                    <ng-icon *ngIf="!roleAssignLoading" [svg]="icons.heroCheck"
+                                        class="h-5 w-5"></ng-icon>
+                                    {{ roleAssignLoading ? 'Assigning...' : 'Assign Role' }}
+                                </button>
+                                <button type="button" (click)="cancelAssignRole()" [disabled]="roleAssignLoading"
+                                    class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors duration-200">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div> <!-- User Details View -->
+                    <div *ngIf="!isAssignRoleMode && selectedUser">
+                        <div class="mb-4">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-1">User Details</h2>
+                            <p class="text-gray-600 text-sm">View user information and current role assignments</p>
+                        </div>
+
+                        <!-- User Information -->
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h3 class="text-base font-medium text-gray-900 mb-3">Personal Information</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500">Display Name</label>
+                                        <p class="mt-0.5 text-base text-gray-900">{{ selectedUser.displayName || 'Not
+                                            specified' }}</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500">Email</label>
+                                        <p class="mt-0.5 text-base text-gray-900">{{ selectedUser.userPrincipalName ||
+                                            'Not
+                                            specified' }}</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500">First Name</label>
+                                        <p class="mt-0.5 text-base text-gray-900">{{ selectedUser.givenName || 'Not
+                                            specified' }}</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500">Last Name</label>
+                                        <p class="mt-0.5 text-base text-gray-900">{{ selectedUser.surname || 'Not
+                                            specified'
+                                            }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Role Information -->
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <div class="flex justify-between items-start mb-3">
+                                    <h3 class="text-base font-medium text-blue-900">Role & Permissions</h3>
+                                    <button (click)="startAssignRole(selectedUser)"
+                                        class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-1 px-2 rounded-md transition-colors duration-200 flex items-center gap-1">
+                                        <ng-icon [svg]="icons.heroPencil" class="h-3 w-3"></ng-icon>
+                                        Change Role
+                                    </button>
+                                </div>
+                                <div *ngIf="selectedUser.role; else noRole">
+                                    <div class="mb-2">
+                                        <label class="block text-sm font-medium text-blue-700">Current Role</label>
+                                        <p class="mt-0.5 text-base font-semibold text-blue-900">{{
+                                            selectedUser.role.roleName }}</p>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-blue-700 mb-1">Permissions</label>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                            <span
+                                                *ngFor="let permission of getPermissionNames(selectedUser.role.permissions)"
+                                                class="inline-flex items-center px-2 py-1 rounded-md text-sm font-medium bg-blue-100 text-blue-800">
+                                                {{ permission }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <ng-template #noRole>
+                                    <div class="text-center py-3">
+                                        <ng-icon [svg]="icons.heroExclamationTriangle"
+                                            class="h-6 w-6 text-amber-500 mx-auto mb-1"></ng-icon>
+                                        <p class="text-blue-800 font-medium text-sm">No role assigned</p>
+                                        <p class="text-blue-600 text-xs">This user doesn't have any role or permissions
+                                            assigned.</p>
+                                    </div>
+                                </ng-template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div *ngIf="!selectedUser && !isAssignRoleMode" class="text-center py-12">
+                        <ng-icon [svg]="icons.heroUser" class="h-16 w-16 text-gray-300 mx-auto mb-4"></ng-icon>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Select a User</h3>
+                        <p class="text-gray-500">Choose a user from the list to view their details and manage their role
+                            assignments</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

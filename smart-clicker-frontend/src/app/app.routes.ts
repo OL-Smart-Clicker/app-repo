@@ -26,6 +26,22 @@ export const routes: Routes = [
         loadComponent: () =>
           import("./pages/qotd/qotd.component").then((m) => m.QotdComponent),
         canActivate: [MsalGuard],
+      },      {
+        path: "roles",
+        loadComponent: () =>
+          import("./pages/roles/roles.component").then((m) => m.RolesComponent),
+        canActivate: [MsalGuard],
+      },      {
+        path: "users",
+        loadComponent: () =>
+          import("./pages/users/users.component").then((m) => m.UsersComponent),
+        canActivate: [MsalGuard],
+      },
+      {
+        path: "offices",
+        loadComponent: () =>
+          import("./pages/offices/offices.component").then((m) => m.OfficesComponent),
+        canActivate: [MsalGuard],
       },
       {
         path: "docs",
@@ -51,4 +67,4 @@ export const routes: Routes = [
   ],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
