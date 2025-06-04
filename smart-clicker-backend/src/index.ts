@@ -8,6 +8,8 @@ import path from "path";
 import roleController from "./controllers/roleController";
 import clickerController from "./controllers/clickerController";
 import qotdController from "./controllers/qotdController";
+import userController from "./controllers/userController";
+import officeController from "./controllers/officeController";
 
 dotenv.config();
 const production = process.env.PRODUCTION === "true";
@@ -57,6 +59,8 @@ app.get("/api-docs", (req, res) => {
 app.use("/role", roleController);
 app.use("/clicker-data", clickerController);
 app.use("/qotd", qotdController);
+app.use("/user", userController);
+app.use("/office", officeController);
 
 app.use((req, res, next) => {
   res.status(404).send("Not Found");

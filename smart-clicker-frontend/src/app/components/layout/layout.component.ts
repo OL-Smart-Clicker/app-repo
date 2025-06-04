@@ -18,7 +18,7 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     private authServ: AuthService,
     private guardServ: GuardService,
     private router: Router
-  ) {}
+  ) { }
 
   interacted: boolean = true;
   loading: boolean = true;
@@ -32,7 +32,6 @@ export class LayoutComponent implements OnInit, AfterViewInit {
       path: "/home",
       name: "Home",
       icon: icons.heroHome,
-      // permission: Permission.QuestionViewToday,
       permission: "",
       order: 1,
     },
@@ -40,17 +39,34 @@ export class LayoutComponent implements OnInit, AfterViewInit {
       path: "/qotd",
       name: "Question of the Day",
       icon: icons.heroQuestionMarkCircle,
-      // permission: Permission.QuestionViewAll,
-      permission: "",
+      permission: Permission.QuestionView,
       order: 2,
     },
     {
       path: "/data",
       name: "Data Overview",
       icon: icons.heroCircleStack,
-      // permission: Permission.DataViewTenant,
-      permission: "",
+      permission: Permission.DataView,
       order: 3,
+    }, {
+      path: "/roles",
+      name: "Role Management",
+      icon: icons.heroShieldCheck,
+      permission: Permission.RolesView,
+      order: 4,
+    }, {
+      path: "/users",
+      name: "User Management",
+      icon: icons.heroUsers,
+      permission: Permission.RolesAssign,
+      order: 5,
+    },
+    {
+      path: "/offices",
+      name: "Office Management",
+      icon: icons.heroBuildingOffice,
+      permission: Permission.OfficeView,
+      order: 6,
     },
   ];
 

@@ -30,9 +30,12 @@ export class QotdService {
     return resources as Qotd[];
   }
 
-  async getQotdTodayForOffice(officeSpaceId: string): Promise<Qotd | null> {
-    const today = new Date();
-    const isoDate = today.toISOString().split("T")[0];
+  async getQotdForOffice(officeSpaceId: string, date: Date): Promise<Qotd | null> {
+    const year = date.getFullYear().toString();
+    const month =
+      (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1).toString();
+    const day = (date.getDate() < 10 ? "0" : "") + date.getDate().toString();
+    const dateParam = `${year}-${month}-${day}`;
     const query = {
       query:
         "SELECT * FROM c WHERE c.officeSpaceId = @officeSpaceId AND STARTSWITH(c.date, @date)",
@@ -43,7 +46,7 @@ export class QotdService {
         },
         {
           name: "@date",
-          value: isoDate,
+          value: dateParam,
         },
       ],
     };
@@ -62,25 +65,15 @@ export class QotdService {
     await this.container.item(id, officeSpaceId).delete();
   }
 
-  async updateQotd(qotd: Qotd): Promise<Qotd | null> {
-    const { resource } = await this.container
-      .item(qotd.id!, qotd.officeSpaceId)
-      .replace(qotd);
-    if (!resource) return null;
-    return resource as Qotd;
-  }
-
-  async getQotdsForDate(date: Date): Promise<Qotd[]> {
-    const query = {
-      query: "SELECT * FROM c WHERE c.date = @date",
-      parameters: [
-        {
-          name: "@date",
-          value: date.toISOString(),
-        },
-      ],
-    };
-    const { resources } = await this.container.items.query(query).fetchAll();
-    return resources as Qotd[];
+  async updateQotd(qotd: Qotd): Promise<Qotd | boolean> {
+    const existingQotd = await this.getQotdForOffice(qotd.officeSpaceId, new Date(qotd.date));
+    if (!existingQotd) {
+      const { resource } = await this.container
+        .item(qotd.id!, qotd.officeSpaceId)
+        .replace(qotd);
+      if (!resource) return false;
+      return resource as Qotd;
+    }
+    else return true;
   }
 }

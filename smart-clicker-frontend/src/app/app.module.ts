@@ -3,7 +3,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { ReactiveFormsModule } from "@angular/forms";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { AppComponent } from "./app.component";
 import { AppRoutingModule, routes } from "./app.routes";
 import {
@@ -49,9 +49,9 @@ const isIE =
   window.navigator.userAgent.indexOf("MSIE ") > -1 ||
   window.navigator.userAgent.indexOf("Trident/") > -1;
 
-export function loggerCallback(logLevel: LogLevel, message: string) {
-  // console.log(message);
-}
+// export function loggerCallback(logLevel: LogLevel, message: string) {
+//   // console.log(message);
+// }
 
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
@@ -66,7 +66,7 @@ export function MSALInstanceFactory(): IPublicClientApplication {
     },
     system: {
       loggerOptions: {
-        loggerCallback,
+        // loggerCallback,
         logLevel: LogLevel.Info,
         piiLoggingEnabled: false,
       },
@@ -99,6 +99,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     BrowserAnimationsModule,
     RouterModule.forRoot(routes),
     ReactiveFormsModule,
+    FormsModule,
     AppRoutingModule,
     MsalModule,
     AngularToastifyModule,
@@ -143,4 +144,4 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   ],
   bootstrap: [AppComponent, MsalRedirectComponent],
 })
-export class AppModule {}
+export class AppModule { }

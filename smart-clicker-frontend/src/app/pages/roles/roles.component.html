@@ -1,0 +1,190 @@
+<div>
+    <div class="container mx-auto p-3 w-full">
+        <!-- Header -->
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-900 mb-1">Role Management</h1>
+            <p class="text-gray-600 text-sm">Manage roles and permissions for your organization</p>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="flex justify-center items-center py-12">
+            <app-spinner></app-spinner>
+        </div> <!-- Main Content -->
+        <div *ngIf="!loading" class="grid grid-cols-1 lg:grid-cols-3 gap-6"> <!-- Left Panel: Roles List -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <!-- Search and Create Button -->
+                    <div class="mb-4">
+                        <div class="flex gap-2 mb-3">
+                            <div class="flex-1 relative">
+                                <input type="text" [(ngModel)]="searchTerm" (input)="onSearchChange()"
+                                    placeholder="Search roles..."
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                                <ng-icon [svg]="icons.heroMagnifyingGlass"
+                                    class="absolute left-3 top-2.5 h-5 w-5 text-gray-400"></ng-icon>
+                            </div>
+                        </div>
+                        <button (click)="startCreate()"
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center gap-2">
+                            <ng-icon [svg]="icons.heroPlus" class="h-5 w-5"></ng-icon>
+                            Create New Role
+                        </button>
+                    </div> <!-- Roles List -->
+                    <div class="max-h-3/4 overflow-y-auto scrollbar-thin">
+                        <div class="space-y-2 pr-2">
+                            <div *ngFor="let role of filteredRoles" (click)="selectRole(role)"
+                                [class]="'p-4 border rounded-lg cursor-pointer transition-all duration-200 ' + 
+                         (selectedRole?.id === role.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50')">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <h3 class="font-medium text-gray-900">{{ role.roleName }}</h3>
+                                        <p class="text-sm text-gray-500 mt-1">
+                                            {{ getTotalPermissionsCount(role.permissions) }} permissions
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-1 ml-2">
+                                        <button (click)="startEdit(role); $event.stopPropagation()"
+                                            class="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                                            title="Edit role">
+                                            <ng-icon [svg]="icons.heroPencil" class="h-4 w-4"></ng-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Empty State -->
+                            <div *ngIf="filteredRoles.length === 0" class="text-center py-8">
+                                <ng-icon [svg]="icons.heroUserGroup"
+                                    class="h-12 w-12 text-gray-300 mx-auto mb-4"></ng-icon>
+                                <p class="text-gray-500">No roles found</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- Right Panel: Role Details/Form -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-md p-4">
+
+                    <!-- Create/Edit Form -->
+                    <div *ngIf="isCreateMode || isEditMode">
+                        <div class="mb-4">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-1">
+                                {{ isCreateMode ? 'Create New Role' : 'Edit Role' }}
+                            </h2>
+                            <p *ngIf="isCreateMode" class="text-gray-600 text-sm">
+                                Define a new role with specific permissions
+                            </p>
+                            <p *ngIf="!isCreateMode" class="text-gray-600 text-sm">
+                                Modify role details and permissions
+                            </p>
+                        </div>
+
+                        <form (ngSubmit)="saveRole()" class="space-y-4"> <!-- Role Name -->
+                            <div>
+                                <label for="roleName" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Role Name
+                                </label>
+                                <input id="roleName" type="text" [(ngModel)]="formData.roleName" name="roleName"
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    placeholder="Enter role name" />
+                            </div>
+
+                            <!-- Permissions -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Permissions
+                                </label>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div *ngFor="let permission of permissionOptions" class="flex items-center">
+                                        <input [id]="'permission-' + permission.key" type="checkbox"
+                                            [checked]="hasPermission(permission.value)"
+                                            (change)="togglePermission(permission.value)"
+                                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                                        <label [for]="'permission-' + permission.key"
+                                            class="ml-3 text-sm text-gray-700 cursor-pointer">
+                                            {{ permission.label }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div> <!-- Action Buttons -->
+                            <div class="flex gap-3 pt-4">
+                                <button type="submit"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition-colors duration-200">
+                                    {{ isCreateMode ? 'Create Role' : 'Save Changes' }}
+                                </button>
+                                <button type="button" (click)="cancelEdit()"
+                                    class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-6 rounded-md transition-colors duration-200">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Role Details View -->
+                    <div *ngIf="selectedRole && !isCreateMode && !isEditMode">
+                        <div class="mb-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h2 class="text-xl font-semibold text-gray-900 mb-1">{{ selectedRole.roleName }}
+                                    </h2>
+                                    <p class="text-gray-600 text-sm">Role details and permissions</p>
+                                </div>
+                                <button (click)="startEdit(selectedRole)"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center gap-2">
+                                    <ng-icon [svg]="icons.heroPencil" class="h-4 w-4"></ng-icon>
+                                    Edit Role
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Role Information -->
+                        <div class="space-y-4">                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h3 class="text-base font-medium text-gray-900 mb-3">Role Information</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500">Role Name</label>
+                                        <p class="mt-0.5 text-base text-gray-900">{{ selectedRole.roleName }}</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500">Total Permissions</label>
+                                        <p class="mt-0.5 text-base text-gray-900">{{
+                                            getTotalPermissionsCount(selectedRole.permissions)
+                                            }}</p>
+                                    </div>
+                                </div>
+                            </div>                            <!-- Role Permissions -->
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <h3 class="text-base font-medium text-blue-900 mb-3">Permissions</h3>
+                                <div *ngIf="getTotalPermissionsCount(selectedRole.permissions) > 0; else noPermissions">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                        <span *ngFor="let permission of getPermissionNames(selectedRole.permissions)"
+                                            class="inline-flex items-center px-2 py-1 rounded-md text-sm font-medium bg-blue-100 text-blue-800">
+                                            {{ permission }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <ng-template #noPermissions>
+                                    <p class="text-base text-blue-600">No permissions assigned to this role</p>
+                                </ng-template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div *ngIf="!selectedRole && !isCreateMode && !isEditMode" class="text-center py-12">
+                        <ng-icon [svg]="icons.heroUserGroup" class="h-16 w-16 text-gray-300 mx-auto mb-4"></ng-icon>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No Role Selected</h3>
+                        <p class="text-gray-500 mb-6">Select a role from the list to view its details or create a new
+                            one
+                        </p>
+                        <button (click)="startCreate()"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition-colors duration-200 inline-flex items-center gap-2">
+                            <ng-icon [svg]="icons.heroPlus" class="h-5 w-5"></ng-icon>
+                            Create New Role
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
