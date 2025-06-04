@@ -53,7 +53,7 @@ router.get(
         res.status(400).send({ error: "BAD REQUEST" });
         return;
       }
-      const qotd = await qotdService.getQotdTodayForOffice(officeSpaceId);
+      const qotd = await qotdService.getQotdForOffice(officeSpaceId, new Date());
       if (!qotd) {
         res.status(404).send({ message: "No QOTD found for today" });
         return;
@@ -131,7 +131,11 @@ router.put(
         return;
       }
       const updated = await qotdService.updateQotd(qotd);
-      if (!updated) {
+      if (updated === true) {
+        res.status(400).send({ message: "Unable to update QOTD" });
+        return;
+      }
+      else if (updated === false) {
         res.status(404).send({ message: "QOTD not found" });
         return;
       }
@@ -139,25 +143,6 @@ router.put(
     } catch (error) {
       console.error(error);
       res.status(500).send({ message: "Error updating QOTD", error });
-    }
-  }
-);
-
-router.get(
-  "/date/:date",
-  authorize([Permission.QuestionView]),
-  async (req: Request, res: Response): Promise<void> => {
-    try {
-      const date = new Date(req.params.date);
-      if (isNaN(date.getTime())) {
-        res.status(400).send({ error: "BAD REQUEST" });
-        return;
-      }
-      const qotds = await qotdService.getQotdsForDate(date);
-      res.status(200).send(qotds);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({ message: "Error fetching QOTDs for date", error });
     }
   }
 );

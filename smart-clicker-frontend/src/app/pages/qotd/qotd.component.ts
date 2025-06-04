@@ -208,9 +208,13 @@ export class QotdComponent implements OnInit {
       } else {
         this.toastService.error("Failed to update QOTD.");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating QOTD:", error);
-      this.toastService.error("An error occurred while updating the QOTD.");
+      if (error.status === 400) {
+        this.toastService.error("Another QOTD already exists for this date.");
+      } else {
+        this.toastService.error("An error occurred while updating the QOTD.");
+      }
     }
   }
 
