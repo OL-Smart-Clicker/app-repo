@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { GuardService } from "../../services/guard.service";
 import * as icons from "@ng-icons/heroicons/outline";
 import { QotdService } from "../../services/qotd.service";
 
@@ -9,7 +8,6 @@ import { QotdService } from "../../services/qotd.service";
 })
 export class HomeComponent implements OnInit {
   constructor(
-    private guardServ: GuardService,
     private qotdService: QotdService
   ) { }
 

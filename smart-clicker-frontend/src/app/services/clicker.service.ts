@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import axios from "axios";
 import { AuthService } from "./auth.service";
-import { Role } from "../types/role";
 
 @Injectable({
   providedIn: "root",
@@ -19,7 +18,6 @@ export class ClickerService {
   }
 
   async getClickerData(officeSpaceId: string): Promise<any> {
-    const token = await this.authService.getToken();
     const config = await this.getAuthConfig();
     const response = await axios.get(`/api/clicker-data/${officeSpaceId}`, config);
     return response.data;

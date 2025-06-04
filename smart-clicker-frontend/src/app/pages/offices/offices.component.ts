@@ -1,14 +1,11 @@
 import { Component, OnInit } from "@angular/core";
-import { GuardService } from "../../services/guard.service";
 import * as icons from "@ng-icons/heroicons/outline";
 import { OfficeService } from "../../services/office.service";
 import { Office } from "../../types/office";
-import { Permission } from "../../types/permission";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { NgIconsModule } from "@ng-icons/core";
 import { SpinnerComponent } from "../../components";
-import { AuthService } from "../../services/auth.service";
 
 @Component({
     selector: "app-offices",
@@ -30,10 +27,8 @@ export class OfficesComponent implements OnInit {
     };
 
     constructor(
-        private guardServ: GuardService,
         private officeService: OfficeService,
-        private authService: AuthService,
-    ) { }    icons = icons;
+    ) { } icons = icons;
     async ngOnInit(): Promise<void> {
         await this.loadOffices();
     }

@@ -129,7 +129,7 @@ export class QotdComponent implements OnInit {
   async eventTimesChanged({
     event,
     newStart,
-    newEnd,
+    newEnd
   }: CalendarEventTimesChangedEvent): Promise<void> {
     if (newStart < new Date()) {
       this.toastService.error("You cannot change the date to a past date.");
