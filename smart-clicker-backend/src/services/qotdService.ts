@@ -76,4 +76,24 @@ export class QotdService {
     }
     else return true;
   }
+
+  async getQotdsUntilToday(officeSpaceId: string): Promise<number> {
+    const today = new Date();
+    const query = {
+      query:
+        "SELECT * FROM c WHERE c.officeSpaceId = @officeSpaceId AND c.date <= @today",
+      parameters: [
+        {
+          name: "@officeSpaceId",
+          value: officeSpaceId,
+        },
+        {
+          name: "@today",
+          value: today.toISOString(),
+        },
+      ],
+    };
+    const { resources } = await this.container.items.query(query).fetchAll();
+    return resources.length;
+  }
 }

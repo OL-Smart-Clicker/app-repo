@@ -1,1 +1,44 @@
-<h1 class="text-5xl font-bold text-gray-900 mb-2">{{ qotd }}</h1>
+<!-- QOTD Bar -->
+<div class="w-full flex flex-col sm:flex-row items-center justify-between bg-white rounded-xl shadow p-4 mt-6 mb-8 max-w-5xl mx-auto">
+  <div class="flex-1 flex items-center justify-center">
+    <span class="text-lg sm:text-xl md:text-2xl font-medium text-primary-blue">Today's question:</span>
+    <span class="ml-2 text-lg sm:text-xl md:text-2xl font-semibold text-primary-black">{{ qotd }}</span>
+  </div>
+  <div class="mt-2 sm:mt-0 sm:ml-4 flex-shrink-0">
+    <span class="inline-block bg-primary-light-blue text-primary-blue font-mono text-lg px-4 py-2 rounded-lg shadow-sm">
+      {{ currentTime }}
+    </span>
+  </div>
+</div>
+
+<!-- Dashboard Grid -->
+<div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
+  <!-- Total Clicks This Week -->
+  <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center min-h-[120px]">
+    <div class="text-lg font-semibold mb-2 text-primary-blue">Total Clicks this week</div>
+    <div class="text-3xl font-bold text-primary-blue">296</div>
+  </div>
+  <!-- Total Clicks -->
+  <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center min-h-[120px]">
+    <div class="text-lg font-semibold mb-2 text-primary-blue">Total Clicks</div>
+    <div class="text-3xl font-bold text-primary-blue">17,296</div>
+  </div>
+  <!-- Office Map Placeholder -->
+  <div class="bg-white rounded-xl shadow p-4 flex flex-col items-center justify-center min-h-[120px] md:col-span-2">
+    <div class="w-full h-32 bg-primary-light-blue rounded-lg flex items-center justify-center">
+      <span class="text-secondary-blue">[Office Map Image/Chart]</span>
+    </div>
+  </div>
+  <!-- Week Overview Chart Placeholder -->
+  <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center min-h-[180px] md:col-span-2">
+    <div class="w-full h-32 flex items-center justify-center bg-primary-light-blue rounded-lg">
+      <span class="text-secondary-blue">[Week Overview Bar Chart]</span>
+    </div>
+  </div>
+  <!-- Engagement Heatmap Placeholder -->
+  <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center min-h-[180px] md:col-span-2">
+    <div class="w-full h-32 flex items-center justify-center bg-primary-light-blue rounded-lg">
+      <span class="text-secondary-blue">[Engagement Heatmap]</span>
+    </div>
+  </div>
+</div>

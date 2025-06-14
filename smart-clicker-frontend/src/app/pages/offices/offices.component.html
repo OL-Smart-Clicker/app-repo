@@ -33,7 +33,7 @@
                     </div>
 
                     <!-- Offices List -->
-                    <div class="max-h-3/4 overflow-y-auto scrollbar-thin">
+                    <div class="max-h-[60vh] overflow-y-auto scrollbar-thin">
                         <div class="space-y-2 pr-2">
                             <div *ngFor="let office of filteredOffices" (click)="selectOffice(office)"
                                 [class]="'p-4 border rounded-lg cursor-pointer transition-all duration-200 ' + 
@@ -41,7 +41,7 @@
                                 <div class="flex justify-between items-start">
                                     <div class="flex-1">
                                         <h3 class="font-medium text-gray-900">{{ office.name }}</h3>
-                                        <p class="text-sm text-gray-500 mt-1">Clickers: -</p>
+                                        <p class="text-sm text-gray-500 mt-1">Clickers: {{office.deviceCount}}</p>
                                     </div>
                                     <div class="flex gap-1 ml-2">
                                         <button (click)="startEdit(office); $event.stopPropagation()"
@@ -88,6 +88,28 @@
                                     placeholder="Enter office name" />
                             </div>
 
+                            <!-- Office WiFi Name -->
+                            <div>
+                                <label for="officeWifiName" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Office WiFi Network Name
+                                </label>
+                                <input id="officeWifiName" type="text" [(ngModel)]="formData.wifiName"
+                                    name="officeWifiName" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    placeholder="Enter office WiFi network name" />
+                            </div>
+
+                            <!-- Office WiFi Password -->
+                            <div>
+                                <label for="officeWifiPassword" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Office WiFi Network Password
+                                </label>
+                                <input id="officeWifiPassword" type="text" [(ngModel)]="formData.wifiPassword"
+                                    name="officeWifiPassword" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    placeholder="Enter office WiFi network password" />
+                            </div>
+
                             <!-- Form Actions -->
                             <div class="flex gap-3 pt-4">
                                 <button type="submit" [disabled]="!formData.name || loading"
@@ -108,7 +130,8 @@
                             <h2 class="text-xl font-semibold text-gray-900 mb-1">Office Details</h2>
                             <p class="text-gray-600 text-sm">View office information</p>
                         </div> <!-- Office Information -->
-                        <div class="space-y-4">                            <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
                                 <div class="flex justify-between items-start mb-4">
                                     <h3 class="text-base font-medium text-gray-900">Office Information</h3>
                                     <button (click)="startEdit(selectedOffice)"
@@ -118,26 +141,32 @@
                                     </button>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-500">Office Name</label>
                                         <p class="mt-1 text-base text-gray-900">{{ selectedOffice.name }}</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500">Office WiFi Network
+                                            Name</label>
+                                        <p class="mt-1 text-base text-gray-900">{{ selectedOffice.wifiName }}</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500">Office WiFi Network
+                                            Password</label>
+                                        <p class="mt-1 text-base text-gray-900">{{ selectedOffice.wifiPassword }}</p>
                                     </div>
                                 </div>
                             </div><!-- Office Stats (Placeholder for future features) -->
                             <div class="bg-blue-50 p-4 rounded-lg">
                                 <h3 class="text-base font-medium text-blue-900 mb-3">Office Statistics</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div class="text-center">
-                                        <p class="text-2xl font-bold text-blue-800">-</p>
+                                        <p class="text-2xl font-bold text-blue-800">{{selectedOffice.deviceCount}}</p>
                                         <p class="text-sm text-blue-600">Clicker Devices</p>
                                     </div>
                                     <div class="text-center">
-                                        <p class="text-2xl font-bold text-blue-800">-</p>
-                                        <p class="text-sm text-blue-600">Anchor Devices</p>
-                                    </div>
-                                    <div class="text-center">
-                                        <p class="text-2xl font-bold text-blue-800">-</p>
+                                        <p class="text-2xl font-bold text-blue-800">{{selectedOffice.qotdCount}}</p>
                                         <p class="text-sm text-blue-600">Questions so far</p>
                                     </div>
                                 </div>

@@ -30,7 +30,7 @@
                             Create New Role
                         </button>
                     </div> <!-- Roles List -->
-                    <div class="max-h-3/4 overflow-y-auto scrollbar-thin">
+                    <div class="max-h-[60vh] overflow-y-auto scrollbar-thin">
                         <div class="space-y-2 pr-2">
                             <div *ngFor="let role of filteredRoles" (click)="selectRole(role)"
                                 [class]="'p-4 border rounded-lg cursor-pointer transition-all duration-200 ' + 
@@ -139,7 +139,8 @@
                         </div>
 
                         <!-- Role Information -->
-                        <div class="space-y-4">                            <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
                                 <h3 class="text-base font-medium text-gray-900 mb-3">Role Information</h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
@@ -153,7 +154,7 @@
                                             }}</p>
                                     </div>
                                 </div>
-                            </div>                            <!-- Role Permissions -->
+                            </div> <!-- Role Permissions -->
                             <div class="bg-blue-50 p-4 rounded-lg">
                                 <h3 class="text-base font-medium text-blue-900 mb-3">Permissions</h3>
                                 <div *ngIf="getTotalPermissionsCount(selectedRole.permissions) > 0; else noPermissions">

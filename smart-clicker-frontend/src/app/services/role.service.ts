@@ -24,7 +24,6 @@ export class RoleService {
     return response.data as Role;
   }
 
-
   async createRole(role: Role): Promise<Role> {
     const config = await this.getAuthConfig();
     const response = await axios.post(`api/role`, role, config);
