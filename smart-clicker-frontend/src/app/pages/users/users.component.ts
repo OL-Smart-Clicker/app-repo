@@ -33,7 +33,10 @@ export class UsersComponent implements OnInit {
         private guardServ: GuardService,
         private userService: UserService,
         private roleService: RoleService,
-    ) { }    icons = icons;
+    ) { }
+
+    icons = icons;
+
     async ngOnInit(): Promise<void> {
         await Promise.all([
             this.loadUsers(),

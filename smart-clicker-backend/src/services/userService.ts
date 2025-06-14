@@ -10,7 +10,9 @@ export class UserService {
 
     constructor() {
         this.graphConfig = graphConfig;
-    } private async getConfig(): Promise<AxiosRequestConfig> {
+    }
+
+    private async getConfig(): Promise<AxiosRequestConfig> {
         const token = await this.graphConfig.getGraphToken(this.graphConfig.graphTokenRequest);
         return {
             headers: {

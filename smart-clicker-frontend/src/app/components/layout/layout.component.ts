@@ -7,17 +7,24 @@ import { Permission } from "../../types/permission";
 import { CommonModule } from "@angular/common";
 import { NgIconsModule } from "@ng-icons/core";
 import { AngularToastifyModule } from "angular-toastify";
+import { RoleService } from "../../services/role.service";
+import { OfficeService } from "../../services/office.service";
+import { Office } from "../../types/office";
+import { FormsModule } from '@angular/forms';
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-layout",
   templateUrl: "./layout.component.html",
-  imports: [CommonModule, NgIconsModule, RouterModule, AngularToastifyModule],
+  imports: [CommonModule, NgIconsModule, RouterModule, AngularToastifyModule, FormsModule],
 })
 export class LayoutComponent implements OnInit, AfterViewInit {
   constructor(
     private authServ: AuthService,
     private guardServ: GuardService,
-    private router: Router
+    private router: Router,
+    private roleServ: RoleService,
+    private officeServ: OfficeService
   ) { }
 
   interacted: boolean = true;
@@ -29,46 +36,50 @@ export class LayoutComponent implements OnInit, AfterViewInit {
   navItems: any[] = [];
   routes: any[] = [
     {
-      path: "/home",
+      path: "/admin",
       name: "Home",
       icon: icons.heroHome,
       permission: "",
       order: 1,
     },
     {
-      path: "/qotd",
+      path: "/admin/qotd",
       name: "Question of the Day",
       icon: icons.heroQuestionMarkCircle,
       permission: Permission.QuestionView,
       order: 2,
     },
     {
-      path: "/data",
+      path: "/admin/data",
       name: "Data Overview",
       icon: icons.heroCircleStack,
       permission: Permission.DataView,
       order: 3,
     }, {
-      path: "/roles",
+      path: "/admin/roles",
       name: "Role Management",
       icon: icons.heroShieldCheck,
       permission: Permission.RolesView,
       order: 4,
     }, {
-      path: "/users",
+      path: "/admin/users",
       name: "User Management",
       icon: icons.heroUsers,
       permission: Permission.RolesAssign,
       order: 5,
     },
     {
-      path: "/offices",
+      path: "/admin/offices",
       name: "Office Management",
       icon: icons.heroBuildingOffice,
       permission: Permission.OfficeView,
       order: 6,
     },
   ];
+  offices: Office[] = [];
+  selectedOfficeId: string | null = null;
+  private officeSub: Subscription | undefined;
+  private officesSub: Subscription | undefined;
 
   toggleSidebar() {
     this.interacted = !this.interacted;
@@ -90,16 +101,30 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     this.authServ.logout();
   }
 
-  /*
-        this block might need to be changed to bring back the timeout for the loading
-        it depends on how quickly we are able to load the permissions for each nav option, as well as how many options there are
-    */
-
   async ngOnInit(): Promise<void> {
+    this.officesSub = this.officeServ.offices$.subscribe((offices) => {
+      this.offices = offices;
+      if (!this.selectedOfficeId && this.offices.length > 0) {
+        this.selectedOfficeId = this.offices[0].id;
+        this.officeServ.setOfficeId(this.selectedOfficeId);
+      }
+    });
+
+    if (!this.offices || this.offices.length === 0) {
+      await this.officeServ.refreshOffices();
+    }
+
+    this.officeSub = this.officeServ.officeId$.subscribe((id) => {
+      this.selectedOfficeId = id;
+    });
+
+    const role = await this.roleServ.getUserRole();
     this.routes.forEach(async (route: any) => {
       if (route.permission !== "") {
-        if (await this.guardServ.hasAccess(route.permission)) {
-          this.navItems.push(route);
+        if (role) {
+          if (await this.guardServ.hasAccess(role, route.permission)) {
+            this.navItems.push(route);
+          }
         }
       } else {
         this.navItems.push(route);
@@ -108,13 +133,18 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.officeSub) {
+      this.officeSub.unsubscribe();
+    }
+    if (this.officesSub) {
+      this.officesSub.unsubscribe();
+    }
+  }
+
   ngAfterViewInit(): void {
     this.loading = false;
   }
-
-  /*
-        until here
-    */
 
   @HostListener("window:resize", ["$event"])
   onResize(event: Event): void {
@@ -137,5 +167,17 @@ export class LayoutComponent implements OnInit, AfterViewInit {
 
   getRoute() {
     return this.router.url;
+  }
+
+  async getOffices(): Promise<void> {
+    try {
+      this.offices = await this.officeServ.getAllOffices();
+    } catch (error) {
+      console.error("Error loading offices:", error);
+    }
+  }
+
+  onOfficeChange(event: any) {
+    this.officeServ.setOfficeId(event.target.value);
   }
 }

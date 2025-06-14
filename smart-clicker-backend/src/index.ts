@@ -10,6 +10,7 @@ import clickerController from "./controllers/clickerController";
 import qotdController from "./controllers/qotdController";
 import userController from "./controllers/userController";
 import officeController from "./controllers/officeController";
+import iotController from "./controllers/iotController";
 
 dotenv.config();
 const production = process.env.PRODUCTION === "true";
@@ -61,6 +62,7 @@ app.use("/clicker-data", clickerController);
 app.use("/qotd", qotdController);
 app.use("/user", userController);
 app.use("/office", officeController);
+app.use("/iot", iotController);
 
 app.use((req, res, next) => {
   res.status(404).send("Not Found");

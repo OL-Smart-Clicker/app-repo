@@ -4,50 +4,62 @@ import { BrowserUtils } from "@azure/msal-browser";
 import { LayoutComponent } from "./components/layout/layout.component";
 import { MsalGuard } from "@azure/msal-angular";
 import { GuardService } from "./services/guard.service";
-import { DemoMarketComponent } from "./pages/demoMarket/demoMarket.component";
+import { Permission } from "./types/permission";
 
 export const routes: Routes = [
   {
     path: "",
-    redirectTo: "demo",
+    redirectTo: "home",
     pathMatch: "full",
   },
   {
-    path: "demo",
-    component: DemoMarketComponent,
-    pathMatch: "full",
+    path: "home",
+    loadComponent: () =>
+      import("./pages/home/home.component").then((m) => m.HomeComponent),
   },
   {
-    path: "",
+    path: "admin",
     component: LayoutComponent,
+    canActivate: [MsalGuard],
     children: [
       {
-        path: "home",
+        path: "",
         loadComponent: () =>
           import("./pages/home/home.component").then((m) => m.HomeComponent),
         canActivate: [MsalGuard],
+        pathMatch: "full",
       },
       {
         path: "qotd",
         loadComponent: () =>
           import("./pages/qotd/qotd.component").then((m) => m.QotdComponent),
-        canActivate: [MsalGuard],
-      }, {
+        canActivate: [MsalGuard, GuardService],
+        pathMatch: "full",
+        data: { permission: Permission.QuestionView }
+      },
+      {
         path: "roles",
         loadComponent: () =>
           import("./pages/roles/roles.component").then((m) => m.RolesComponent),
-        canActivate: [MsalGuard],
-      }, {
+        canActivate: [MsalGuard, GuardService],
+        pathMatch: "full",
+        data: { permission: Permission.RolesView }
+      },
+      {
         path: "users",
         loadComponent: () =>
           import("./pages/users/users.component").then((m) => m.UsersComponent),
-        canActivate: [MsalGuard],
+        canActivate: [MsalGuard, GuardService],
+        pathMatch: "full",
+        data: { permission: Permission.RolesAssign }
       },
       {
         path: "offices",
         loadComponent: () =>
           import("./pages/offices/offices.component").then((m) => m.OfficesComponent),
-        canActivate: [MsalGuard],
+        canActivate: [MsalGuard, GuardService],
+        pathMatch: "full",
+        data: { permission: Permission.OfficeView }
       },
       {
         path: "docs",
@@ -55,7 +67,7 @@ export const routes: Routes = [
           import("./pages/swagger/swagger.component").then(
             (m) => m.SwaggerComponent
           ),
-        canActivate: [MsalGuard],
+        canActivate: [MsalGuard, GuardService],
         pathMatch: "full",
       },
     ],

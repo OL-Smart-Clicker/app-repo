@@ -23,12 +23,17 @@ export class OfficesComponent implements OnInit {
 
     // Form data for create/edit
     formData: Partial<Office> = {
-        name: ''
+        name: '',
+        wifiName: '',
+        wifiPassword: ''
     };
 
     constructor(
         private officeService: OfficeService,
-    ) { } icons = icons;
+    ) { }
+
+    icons = icons;
+
     async ngOnInit(): Promise<void> {
         await this.loadOffices();
     }
@@ -71,7 +76,9 @@ export class OfficesComponent implements OnInit {
         this.isEditMode = false;
         this.selectedOffice = null;
         this.formData = {
-            name: ''
+            name: '',
+            wifiName: '',
+            wifiPassword: ''
         };
     }
 
@@ -80,7 +87,9 @@ export class OfficesComponent implements OnInit {
         this.isCreateMode = false;
         this.selectedOffice = office;
         this.formData = {
-            name: office.name
+            name: office.name,
+            wifiName: office.wifiName,
+            wifiPassword: office.wifiPassword
         };
     }
 
@@ -89,7 +98,9 @@ export class OfficesComponent implements OnInit {
         this.isEditMode = false;
         this.selectedOffice = null;
         this.formData = {
-            name: ''
+            name: '',
+            wifiName: '',
+            wifiPassword: ''
         };
     }
 
@@ -103,11 +114,13 @@ export class OfficesComponent implements OnInit {
                 const officeData: Office = {
                     id: this.selectedOffice.id,
                     tenantId: this.selectedOffice.tenantId,
-                    name: this.formData.name!
+                    name: this.formData.name!,
+                    wifiName: this.formData.wifiName!,
+                    wifiPassword: this.formData.wifiPassword!
                 };
                 await this.officeService.updateOffice(officeData);
             }
-
+            await this.officeService.refreshOffices();
             await this.loadOffices();
             this.cancelEdit();
         } catch (error) {
