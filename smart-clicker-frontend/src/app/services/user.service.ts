@@ -16,7 +16,9 @@ export class UserService {
         Authorization: `Bearer ${token}`,
       },
     };
-  }  async assignRoleToUser(userId: string, roleId: string): Promise<void> {
+  }
+
+  async assignRoleToUser(userId: string, roleId: string): Promise<void> {
     const config = await this.getAuthConfig();
     await axios.post(`api/role/assign`, { userId, roleId }, config);
   }

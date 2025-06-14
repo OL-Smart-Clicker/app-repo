@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { startOfDay, isSameDay, isSameMonth } from "date-fns";
 import {
   CalendarEvent,
@@ -24,6 +24,8 @@ import {
 } from "@angular/forms";
 import { ToastService } from "angular-toastify";
 import { CommonModule } from "@angular/common";
+import { OfficeService } from "../../services/office.service";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-qotd",
@@ -43,12 +45,13 @@ import { CommonModule } from "@angular/common";
   }
   `,
 })
-export class QotdComponent implements OnInit {
+export class QotdComponent implements OnInit, OnDestroy {
   constructor(
     private guardServ: GuardService,
     private qotdService: QotdService,
     private formBuilder: FormBuilder,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private officeServ: OfficeService
   ) {
     this.editForm = this.formBuilder.group({
       question: new FormControl<string>("", [
@@ -88,12 +91,24 @@ export class QotdComponent implements OnInit {
   editModal: boolean = false;
   addModal: boolean = false;
 
+  officeSpaceId: string = '';
+  private officeSub: Subscription | undefined;
+
   async ngOnInit(): Promise<void> {
-    await this.getQotds();
+    this.officeSub = this.officeServ.officeId$.subscribe(async (id) => {
+      this.officeSpaceId = id;
+      await this.getQotds();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.officeSub) {
+      this.officeSub.unsubscribe();
+    }
   }
 
   async getQotds() {
-    await this.qotdService.getQotdsForOffice("f17120a9-4d72-402a-812e-6cd2b7482d6a").then((qotds) => {
+    await this.qotdService.getQotdsForOffice(this.officeSpaceId).then((qotds) => {
       this.qotds = qotds.map((qotd) => {
         return {
           id: qotd.id,
@@ -262,7 +277,7 @@ export class QotdComponent implements OnInit {
       id: crypto.randomUUID(),
       question: this.addForm.value.question,
       date: new Date(this.addForm.value.date),
-      officeSpaceId: "f17120a9-4d72-402a-812e-6cd2b7482d6a",
+      officeSpaceId: this.officeSpaceId,
     };
     try {
       const response = await this.qotdService.createQotd(newQotd);
