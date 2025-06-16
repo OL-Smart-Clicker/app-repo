@@ -35,10 +35,11 @@
 <ng-template #customActionTemplate let-day="day" let-locale="locale" let-event="event">
   <span class="hover:text-amber-300">
     <ng-icon [svg]="icons.heroPencil" [size]="'1.1rem'" class="pt-0.5 mr-1 cursor-pointer"
-      (click)="handleEdit(event, true)" />
+      (click)="handleEdit(event, true)" *ngIf="updateQotd" />
   </span>
   <span class="hover:text-red-500">
-    <ng-icon [svg]="icons.heroTrash" [size]="'1.1rem'" class="pt-0.5 cursor-pointer" (click)="deleteEvent(event)" />
+    <ng-icon [svg]="icons.heroTrash" [size]="'1.1rem'" class="pt-0.5 cursor-pointer" (click)="deleteEvent(event)"
+      *ngIf="deleteQotd" />
   </span>
 </ng-template>
 

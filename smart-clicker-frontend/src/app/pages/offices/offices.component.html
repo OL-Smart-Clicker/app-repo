@@ -25,7 +25,7 @@
                                     class="absolute left-3 top-2.5 h-5 w-5 text-gray-400"></ng-icon>
                             </div>
                         </div>
-                        <button (click)="startCreate()"
+                        <button (click)="startCreate()" *ngIf="officeCreate"
                             class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center gap-2">
                             <ng-icon [svg]="icons.heroPlus" class="h-5 w-5"></ng-icon>
                             Create New Office
@@ -44,7 +44,8 @@
                                         <p class="text-sm text-gray-500 mt-1">Clickers: {{office.deviceCount}}</p>
                                     </div>
                                     <div class="flex gap-1 ml-2">
-                                        <button (click)="startEdit(office); $event.stopPropagation()"
+                                        <button *ngIf="officeUpdate"
+                                            (click)="startEdit(office); $event.stopPropagation()"
                                             class="p-1 text-gray-400 hover:text-blue-600 transition-colors"
                                             title="Edit office">
                                             <ng-icon [svg]="icons.heroPencil" class="h-4 w-4"></ng-icon>
@@ -63,7 +64,7 @@
             </div> <!-- Right Panel: Office Details/Form -->
             <div class="lg:col-span-2">
                 <div class="bg-white rounded-lg shadow-md p-4"> <!-- Create/Edit Form -->
-                    <div *ngIf="isCreateMode || isEditMode">
+                    <div *ngIf="(isCreateMode && officeCreate) || (isEditMode && officeUpdate)">
                         <div class="mb-4">
                             <h2 class="text-xl font-semibold text-gray-900 mb-1">
                                 {{ isCreateMode ? 'Create New Office' : 'Edit Office' }}
@@ -134,7 +135,7 @@
                             <div class="bg-gray-50 p-4 rounded-lg">
                                 <div class="flex justify-between items-start mb-4">
                                     <h3 class="text-base font-medium text-gray-900">Office Information</h3>
-                                    <button (click)="startEdit(selectedOffice)"
+                                    <button *ngIf="officeUpdate" (click)="startEdit(selectedOffice)"
                                         class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-1 px-3 rounded-md transition-colors duration-200 flex items-center gap-1">
                                         <ng-icon [svg]="icons.heroPencil" class="h-4 w-4"></ng-icon>
                                         Edit Office
@@ -157,7 +158,7 @@
                                         <p class="mt-1 text-base text-gray-900">{{ selectedOffice.wifiPassword }}</p>
                                     </div>
                                 </div>
-                            </div><!-- Office Stats (Placeholder for future features) -->
+                            </div><!-- Office Stats -->
                             <div class="bg-blue-50 p-4 rounded-lg">
                                 <h3 class="text-base font-medium text-blue-900 mb-3">Office Statistics</h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

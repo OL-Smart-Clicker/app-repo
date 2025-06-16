@@ -23,12 +23,16 @@ export class RolesComponent implements OnInit {
     isEditMode = false;
     searchTerm = '';
     loading = false;
+    rolesCreate: boolean = false;
+    rolesUpdate: boolean = false;
 
     // Form data for create/edit
     formData: Partial<Role> = {
         roleName: '',
         permissions: 0
     };
+
+    userRole: Role | null = null;
 
     permissionOptions = [
         { key: Permission.QuestionCreate, label: 'Create Questions', value: Permission.QuestionCreate },
@@ -49,9 +53,19 @@ export class RolesComponent implements OnInit {
         private guardServ: GuardService,
         private roleService: RoleService,
         private authService: AuthService,
-    ) { }    icons = icons;
+    ) { } icons = icons;
     async ngOnInit(): Promise<void> {
-        await this.loadRoles();
+        const [role, _] = await Promise.all([
+            this.roleService.getUserRole(),
+            this.loadRoles()
+        ]);
+        const [rolesCreate, rolesUpdate] = await Promise.all([
+            this.guardServ.hasAccess(role, Permission.RolesCreate),
+            this.guardServ.hasAccess(role, Permission.RolesUpdate),
+        ]);
+        this.rolesCreate = rolesCreate;
+        this.rolesUpdate = rolesUpdate;
+        this.userRole = role;
     }
 
     async loadRoles(): Promise<void> {

@@ -27,6 +27,8 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     private officeServ: OfficeService
   ) { }
 
+  fullscreen: boolean = false;
+  showFullscreenButton: boolean = false;
   interacted: boolean = true;
   loading: boolean = true;
   sidebarVisible: boolean = true;
@@ -36,40 +38,40 @@ export class LayoutComponent implements OnInit, AfterViewInit {
   navItems: any[] = [];
   routes: any[] = [
     {
-      path: "/admin",
+      path: "/home",
       name: "Home",
       icon: icons.heroHome,
       permission: "",
       order: 1,
     },
     {
-      path: "/admin/qotd",
+      path: "/qotd",
       name: "Question of the Day",
       icon: icons.heroQuestionMarkCircle,
       permission: Permission.QuestionView,
       order: 2,
     },
     {
-      path: "/admin/data",
+      path: "/data",
       name: "Data Overview",
       icon: icons.heroCircleStack,
       permission: Permission.DataView,
       order: 3,
     }, {
-      path: "/admin/roles",
+      path: "/roles",
       name: "Role Management",
       icon: icons.heroShieldCheck,
       permission: Permission.RolesView,
       order: 4,
     }, {
-      path: "/admin/users",
+      path: "/users",
       name: "User Management",
       icon: icons.heroUsers,
       permission: Permission.RolesAssign,
       order: 5,
     },
     {
-      path: "/admin/offices",
+      path: "/offices",
       name: "Office Management",
       icon: icons.heroBuildingOffice,
       permission: Permission.OfficeView,
@@ -102,6 +104,9 @@ export class LayoutComponent implements OnInit, AfterViewInit {
   }
 
   async ngOnInit(): Promise<void> {
+    // Set showFullscreenButton on initial load
+    this.showFullscreenButton = this.router.url.startsWith('/home');
+
     this.officesSub = this.officeServ.offices$.subscribe((offices) => {
       this.offices = offices;
       if (!this.selectedOfficeId && this.offices.length > 0) {
@@ -130,6 +135,13 @@ export class LayoutComponent implements OnInit, AfterViewInit {
         this.navItems.push(route);
       }
       this.navItems.sort((a, b) => a.order - b.order);
+    });
+
+    this.router.events.subscribe(() => {
+      this.showFullscreenButton = this.router.url.startsWith('/home');
+      if (!this.showFullscreenButton && this.fullscreen) {
+        this.fullscreen = false;
+      }
     });
   }
 
@@ -179,5 +191,9 @@ export class LayoutComponent implements OnInit, AfterViewInit {
 
   onOfficeChange(event: any) {
     this.officeServ.setOfficeId(event.target.value);
+  }
+
+  toggleFullscreen() {
+    this.fullscreen = !this.fullscreen;
   }
 }

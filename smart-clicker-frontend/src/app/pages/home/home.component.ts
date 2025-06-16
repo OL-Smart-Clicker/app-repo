@@ -10,8 +10,8 @@ import { Subscription } from "rxjs";
 })
 export class HomeComponent implements OnInit, OnDestroy {
   constructor(
-    private qotdServ: QotdService, private officeServ: OfficeService
-  ) {}
+    private qotdServ: QotdService, private officeServ: OfficeService,
+  ) { }
 
   icons = icons;
   qotd: string = "";
