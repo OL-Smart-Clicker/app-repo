@@ -42,7 +42,8 @@
                                         <p class="text-xs text-blue-600 mt-1">{{ getRoleName(user) }}</p>
                                     </div>
                                     <div class="flex gap-1 ml-2">
-                                        <button (click)="startAssignRole(user); $event.stopPropagation()"
+                                        <button *ngIf="rolesAssign && user.id !== userId"
+                                            (click)="startAssignRole(user); $event.stopPropagation()"
                                             class="p-1 text-gray-400 hover:text-blue-600 transition-colors"
                                             title="Assign role">
                                             <ng-icon [svg]="icons.heroUserPlus" class="h-4 w-4"></ng-icon>
@@ -176,7 +177,8 @@
                             <div class="bg-blue-50 p-4 rounded-lg">
                                 <div class="flex justify-between items-start mb-3">
                                     <h3 class="text-base font-medium text-blue-900">Role & Permissions</h3>
-                                    <button (click)="startAssignRole(selectedUser)"
+                                    <button *ngIf="rolesAssign && selectedUser.id !== userId"
+                                        (click)="startAssignRole(selectedUser)"
                                         class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium py-1 px-2 rounded-md transition-colors duration-200 flex items-center gap-1">
                                         <ng-icon [svg]="icons.heroPencil" class="h-3 w-3"></ng-icon>
                                         Change Role

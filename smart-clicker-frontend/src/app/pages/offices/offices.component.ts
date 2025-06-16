@@ -6,6 +6,9 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { NgIconsModule } from "@ng-icons/core";
 import { SpinnerComponent } from "../../components";
+import { GuardService } from "../../services/guard.service";
+import { RoleService } from "../../services/role.service";
+import { Permission } from "../../types/permission";
 
 @Component({
     selector: "app-offices",
@@ -20,6 +23,8 @@ export class OfficesComponent implements OnInit {
     isEditMode = false;
     searchTerm = '';
     loading = false;
+    officeCreate: boolean = false;
+    officeUpdate: boolean = false;
 
     // Form data for create/edit
     formData: Partial<Office> = {
@@ -29,12 +34,19 @@ export class OfficesComponent implements OnInit {
     };
 
     constructor(
-        private officeService: OfficeService,
+        private officeService: OfficeService, private guardService: GuardService, private roleService: RoleService
     ) { }
 
     icons = icons;
 
     async ngOnInit(): Promise<void> {
+        const role = await this.roleService.getUserRole();
+        const [officeCreate, officeUpdate] = await Promise.all([
+            this.guardService.hasAccess(role, Permission.OfficeCreate),
+            this.guardService.hasAccess(role, Permission.OfficeUpdate)
+        ]);
+        this.officeCreate = officeCreate;
+        this.officeUpdate = officeUpdate;
         await this.loadOffices();
     }
 

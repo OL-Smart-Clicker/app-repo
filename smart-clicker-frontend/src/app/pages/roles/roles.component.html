@@ -24,7 +24,7 @@
                                     class="absolute left-3 top-2.5 h-5 w-5 text-gray-400"></ng-icon>
                             </div>
                         </div>
-                        <button (click)="startCreate()"
+                        <button *ngIf="rolesCreate" (click)="startCreate()"
                             class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center gap-2">
                             <ng-icon [svg]="icons.heroPlus" class="h-5 w-5"></ng-icon>
                             Create New Role
@@ -43,7 +43,8 @@
                                         </p>
                                     </div>
                                     <div class="flex gap-1 ml-2">
-                                        <button (click)="startEdit(role); $event.stopPropagation()"
+                                        <button *ngIf="userRole?.id !== role.id && rolesUpdate"
+                                            (click)="startEdit(role); $event.stopPropagation()"
                                             class="p-1 text-gray-400 hover:text-blue-600 transition-colors"
                                             title="Edit role">
                                             <ng-icon [svg]="icons.heroPencil" class="h-4 w-4"></ng-icon>
@@ -66,7 +67,7 @@
                 <div class="bg-white rounded-lg shadow-md p-4">
 
                     <!-- Create/Edit Form -->
-                    <div *ngIf="isCreateMode || isEditMode">
+                    <div *ngIf="(isCreateMode && rolesCreate) || (isEditMode && rolesUpdate)">
                         <div class="mb-4">
                             <h2 class="text-xl font-semibold text-gray-900 mb-1">
                                 {{ isCreateMode ? 'Create New Role' : 'Edit Role' }}
@@ -130,7 +131,8 @@
                                     </h2>
                                     <p class="text-gray-600 text-sm">Role details and permissions</p>
                                 </div>
-                                <button (click)="startEdit(selectedRole)"
+                                <button *ngIf="userRole?.id !== selectedRole.id && rolesUpdate"
+                                    (click)="startEdit(selectedRole)"
                                     class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center gap-2">
                                     <ng-icon [svg]="icons.heroPencil" class="h-4 w-4"></ng-icon>
                                     Edit Role
@@ -179,7 +181,7 @@
                         <p class="text-gray-500 mb-6">Select a role from the list to view its details or create a new
                             one
                         </p>
-                        <button (click)="startCreate()"
+                        <button *ngIf="rolesCreate" (click)="startCreate()"
                             class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition-colors duration-200 inline-flex items-center gap-2">
                             <ng-icon [svg]="icons.heroPlus" class="h-5 w-5"></ng-icon>
                             Create New Role

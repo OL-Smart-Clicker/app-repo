@@ -13,17 +13,12 @@ export const routes: Routes = [
     pathMatch: "full",
   },
   {
-    path: "home",
-    loadComponent: () =>
-      import("./pages/home/home.component").then((m) => m.HomeComponent),
-  },
-  {
-    path: "admin",
+    path: "",
     component: LayoutComponent,
     canActivate: [MsalGuard],
     children: [
       {
-        path: "",
+        path: "home",
         loadComponent: () =>
           import("./pages/home/home.component").then((m) => m.HomeComponent),
         canActivate: [MsalGuard],
