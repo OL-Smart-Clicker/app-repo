@@ -1,6 +1,7 @@
 import { Container, Database } from "@azure/cosmos";
 import database from "../db/db";
 import { Role } from "../models/role";
+import { seedRoles } from "../utils/databaseSeeder";
 
 export class RoleService {
   private database: Database;
@@ -11,6 +12,17 @@ export class RoleService {
     this.database = database;
     this.userRolesContainer = this.database.container("users-roles");
     this.rolesContainer = this.database.container("roles");
+  }
+
+  async init(): Promise<void> {
+    if (await this.getRolesCount() === 0) {
+      await seedRoles();
+    }
+  }
+
+  private async getRolesCount(): Promise<number> {
+    const { resources } = await this.userRolesContainer.items.readAll().fetchAll();
+    return resources.length as number;
   }
 
   async getUserRole(id: string, tenantId: string): Promise<Role | null> {

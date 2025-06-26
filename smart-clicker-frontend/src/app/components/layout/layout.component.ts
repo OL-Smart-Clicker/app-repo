@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, OnInit } from "@angular/core";
+import { Component, HostListener, OnInit } from "@angular/core";
 import { AuthService } from "../../services/auth.service";
 import * as icons from "@ng-icons/heroicons/outline";
 import { GuardService } from "../../services/guard.service";
@@ -18,7 +18,7 @@ import { Subscription } from "rxjs";
   templateUrl: "./layout.component.html",
   imports: [CommonModule, NgIconsModule, RouterModule, AngularToastifyModule, FormsModule],
 })
-export class LayoutComponent implements OnInit, AfterViewInit {
+export class LayoutComponent implements OnInit {
   constructor(
     private authServ: AuthService,
     private guardServ: GuardService,
@@ -110,7 +110,7 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     this.officesSub = this.officeServ.offices$.subscribe((offices) => {
       this.offices = offices;
       if (!this.selectedOfficeId && this.offices.length > 0) {
-        this.selectedOfficeId = this.offices[0].id;
+        this.selectedOfficeId = this.offices[0].id!;
         this.officeServ.setOfficeId(this.selectedOfficeId);
       }
     });
@@ -143,6 +143,7 @@ export class LayoutComponent implements OnInit, AfterViewInit {
         this.fullscreen = false;
       }
     });
+    this.loading = false;
   }
 
   ngOnDestroy(): void {
@@ -154,12 +155,8 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void {
-    this.loading = false;
-  }
-
   @HostListener("window:resize", ["$event"])
-  onResize(event: Event): void {
+  onResize(_: Event): void {
     if (window.innerWidth <= 768) {
       this.sidebarVisible = false;
       this.textVisible = false;

@@ -28,6 +28,7 @@ import { OfficeService } from "../../services/office.service";
 import { Subscription } from "rxjs";
 import { RoleService } from "../../services/role.service";
 import { Permission } from "../../types/permission";
+import { SpinnerComponent } from '../../components';
 
 @Component({
   selector: "app-qotd",
@@ -40,6 +41,7 @@ import { Permission } from "../../types/permission";
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
+    SpinnerComponent,
   ],
   styles: `
   ::ng-deep .cal-month-view .cal-day-badge {
@@ -96,11 +98,13 @@ export class QotdComponent implements OnInit, OnDestroy {
   createQotd: boolean = false;
   updateQotd: boolean = false;
   deleteQotd: boolean = false;
+  loading = false;
 
   officeSpaceId: string = '';
   private officeSub: Subscription | undefined;
 
   async ngOnInit(): Promise<void> {
+    this.loading = true;
     const role = await this.roleService.getUserRole();
     const [createQotd, updateQotd, deleteQotd] = await Promise.all([
       this.guardServ.hasAccess(role, Permission.QuestionCreate),
@@ -111,8 +115,10 @@ export class QotdComponent implements OnInit, OnDestroy {
     this.updateQotd = updateQotd;
     this.deleteQotd = deleteQotd;
     this.officeSub = this.officeServ.officeId$.subscribe(async (id) => {
+      this.loading = true;
       this.officeSpaceId = id;
       await this.getQotds();
+      this.loading = false;
     });
   }
 
@@ -123,6 +129,7 @@ export class QotdComponent implements OnInit, OnDestroy {
   }
 
   async getQotds() {
+    this.loading = true;
     await this.qotdService.getQotdsForOffice(this.officeSpaceId).then((qotds) => {
       this.qotds = qotds.map((qotd) => {
         return {
@@ -136,6 +143,7 @@ export class QotdComponent implements OnInit, OnDestroy {
           },
         } as CalendarEvent;
       });
+      this.loading = false;
     });
   }
 
@@ -168,15 +176,36 @@ export class QotdComponent implements OnInit, OnDestroy {
       this.toastService.error("You cannot change the date to a past date.");
       return;
     }
-    event.start = newStart;
-    const newQotd: Qotd = {
-      id: event.id as string,
-      question: event.title,
-      date: new Date(newStart),
-      officeSpaceId: event.meta.officeSpaceId,
-    };
-    this.handleEdit(event, false);
-    await this.onEdit(newQotd);
+    if (event.start < new Date()) {
+      const newQotd: Qotd = {
+        id: crypto.randomUUID(),
+        question: event.title,
+        date: new Date(newStart),
+        officeSpaceId: event.meta.officeSpaceId,
+      };
+      try {
+        const response = await this.qotdService.createQotd(newQotd);
+        if (response) {
+          this.toastService.success("QOTD copied to new date successfully.");
+          await this.getQotds();
+        } else {
+          this.toastService.error("Failed to copy QOTD.");
+        }
+      } catch (error) {
+        this.toastService.error("An error occurred while copying the QOTD.");
+        console.error("Error copying QOTD:", error);
+      }
+    } else {
+      event.start = newStart;
+      const updatedQotd: Qotd = {
+        id: event.id as string,
+        question: event.title,
+        date: new Date(newStart),
+        officeSpaceId: event.meta.officeSpaceId,
+      };
+      this.handleEdit(event, false);
+      await this.onEdit(updatedQotd);
+    }
     this.activeDayIsOpen = false;
   }
 

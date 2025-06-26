@@ -28,21 +28,31 @@ export class OfficeService {
     };
   }
 
-  async createOffice(office: Partial<Office>): Promise<Office> {
-    const config = await this.getAuthConfig();
-    const response = await axios.post(`api/office`, office, config);
-    const createdOffice = response.data as Office;
-    await this.refreshOffices();
-    const offices = this.officesSubject.value;
-    if (offices.length === 1) {
-      this.setOfficeId(createdOffice.id);
-    }
-    return createdOffice;
+  private async getAuthFormDataConfig() {
+    const token = await this.authService.getToken();
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    };
   }
 
-  async updateOffice(office: Office): Promise<Office> {
-    const config = await this.getAuthConfig();
-    const response = await axios.put(`api/office/${office.id}`, office, config);
+  async createOffice(data: FormData): Promise<Office> {
+    const config = await this.getAuthFormDataConfig();
+    const response = await axios.post(`api/office`, data, config);
+    return response.data as Office;
+  }
+
+  async updateOffice(data: FormData): Promise<Office> {
+    const config = await this.getAuthFormDataConfig();
+    const response = await axios.put(`api/office/${data.get('id')}`, data, config);
+    return response.data as Office;
+  }
+
+  async updateOfficeAnchors(data: FormData): Promise<Office> {
+    const config = await this.getAuthFormDataConfig();
+    const response = await axios.put(`api/office/${data.get('id')}/anchors`, data, config);
     return response.data as Office;
   }
 
