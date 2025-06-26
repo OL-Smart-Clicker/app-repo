@@ -1,56 +1,108 @@
-// import mockDatabase from "./mockDb";
-// import { RoleService } from "../services/roleService";
-// import { Role } from "../models/role";
+import { RoleService } from "../services/roleService";
+import { Role } from "../models/role";
 
-// const mockDb = mockDatabase;
-// let roleService: RoleService;
-// const mockRole: Role = { id: "123", RoleId: "123", RoleName: "admin", Permissions: 15 };
+const mockRole: Role = { id: "123", tenantId: "tenant1", roleName: "admin", permissions: 15 };
+const mockRole2: Role = { id: "456", tenantId: "tenant1", roleName: "user", permissions: 7 };
+
+jest.mock("../db/db", () => ({
+    container: jest.fn().mockImplementation((name) => ({
+        items: {
+            readAll: jest.fn().mockReturnValue({ fetchAll: jest.fn().mockResolvedValue({ resources: [] }) }),
+            create: jest.fn().mockResolvedValue({ resource: mockRole }),
+            query: jest.fn().mockReturnValue({ fetchAll: jest.fn().mockResolvedValue({ resources: [] }) }),
+        },
+        item: jest.fn().mockReturnValue({
+            read: jest.fn().mockResolvedValue({ resource: mockRole }),
+            replace: jest.fn().mockResolvedValue({ resource: mockRole2 }),
+            delete: jest.fn().mockResolvedValue({}),
+        }),
+    })),
+}));
 
 describe("RoleService", () => {
-    // beforeAll(async () => {
-    //     roleService = new RoleService();
-    //     (roleService as any).database = mockDb;
-    //     await mockDb.container("Roles").items.create(mockRole);
-    //     await mockDb.container("UsersRoles").items.create({ UserId: "123", RoleId: "123" });
-    // })
+    let roleService: RoleService;
+
+    beforeEach(() => {
+        roleService = new RoleService();
+    });
 
     afterAll(async () => {
         jest.clearAllMocks();
     });
 
-    // describe("getUserRole", () => {
-    //     it("should return the user's role ID when found", async () => {
-    //         const mockUserId = "123";
-    //         const roleId = await roleService.getUserRole(mockUserId);
-    //         expect(roleId).toBe(mockRole.RoleId);
-    //     });
+    it("should create a role", async () => {
+        const result = await roleService.createRole(mockRole);
+        expect(result).toEqual(mockRole);
+    });
 
-    //     it("should return an empty string if user role is not found", async () => {
-    //         const mockUserId = "1234";
-    //         const roleId = await roleService.getUserRole(mockUserId);
-    //         expect(roleId).toBe('');
-    //     });
+    it("should update a role", async () => {
+        const result = await roleService.updateRole(mockRole2);
+        expect(result).toEqual(mockRole2);
+    });
 
-    // });
+    it("should get a role by id", async () => {
+        const result = await roleService.getRoleById("123", "tenant1");
+        expect(result).toEqual(mockRole);
+    });
 
-    // describe("getRoleById", () => {
-    //     it("should return the role when found", async () => {
-    //         const mockRoleId = "123";
-    //         const role = await roleService.getRoleById(mockRoleId);
-    //         expect(role).toEqual(mockRole);
-    //     });
+    it("should get roles for a tenant", async () => {
+        // Mock query to return two roles
+        (roleService as any).rolesContainer.items.query = jest
+            .fn()
+            .mockReturnValue({ fetchAll: jest.fn().mockResolvedValue({ resources: [mockRole, mockRole2] }) });
+        const result = await roleService.getRoles("tenant1");
+        expect(result).toEqual([mockRole, mockRole2]);
+    });
 
-    //     it("should return undefined if role is not found", async () => {
-    //         const mockRoleId = "1234";
-    //         const role = await roleService.getRoleById(mockRoleId);
-    //         expect(role).toBeUndefined();
-    //     });
-    // });
+    it("should assign a role to a user", async () => {
+        // Mock getRoleById to return a role
+        roleService.getRoleById = jest.fn().mockResolvedValue(mockRole);
+        // Mock userRolesContainer
+        (roleService as any).userRolesContainer.items.query = jest.fn().mockReturnValue({ fetchAll: jest.fn().mockResolvedValue({ resources: [] }) });
+        (roleService as any).userRolesContainer.items.create = jest.fn().mockResolvedValue({});
+        await expect(roleService.assignRoleToUser("user1", "123", "tenant1")).resolves.toBeUndefined();
+    });
 
-    describe("helloWorld", () => {
-        it("should return 'Hello World!'", () => {
-            const result = "Hello World!"
-            expect(result).toBe("Hello World!");
-        });
-    })
+    it("should throw if assigning a non-existent role to user", async () => {
+        roleService.getRoleById = jest.fn().mockResolvedValue(undefined);
+        await expect(roleService.assignRoleToUser("user1", "badrole", "tenant1")).rejects.toThrow("Role not found");
+    });
+
+    it("should delete old user-role mapping when assigning new role", async () => {
+        roleService.getRoleById = jest.fn().mockResolvedValue(mockRole);
+        // Mock userRolesContainer to return an existing mapping
+        (roleService as any).userRolesContainer.items.query = jest.fn().mockReturnValue({ fetchAll: jest.fn().mockResolvedValue({ resources: [{ id: "ur1", userId: "user1", roleId: "oldrole" }] }) });
+        (roleService as any).userRolesContainer.item = jest.fn().mockReturnValue({ delete: jest.fn().mockResolvedValue({}) });
+        (roleService as any).userRolesContainer.items.create = jest.fn().mockResolvedValue({});
+        await expect(roleService.assignRoleToUser("user1", "123", "tenant1")).resolves.toBeUndefined();
+    });
+
+    it("should get user role", async () => {
+        // Mock userRolesContainer to return a user-role mapping
+        (roleService as any).userRolesContainer.items.query = jest
+            .fn()
+            .mockReturnValue({ fetchAll: jest.fn().mockResolvedValue({ resources: [{ userId: "user1", roleId: "123" }] }) });
+        roleService.getRoleById = jest.fn().mockResolvedValue(mockRole);
+        const result = await roleService.getUserRole("user1", "tenant1");
+        expect(result).toEqual(mockRole);
+    });
+
+    it("should return null if user role mapping has no roleId", async () => {
+        (roleService as any).userRolesContainer.items.query = jest.fn().mockReturnValue({ fetchAll: jest.fn().mockResolvedValue({ resources: [{ userId: "user1" }] }) });
+        const result = await roleService.getUserRole("user1", "tenant1");
+        expect(result).toBeNull();
+    });
+
+    it("should handle getRoleById returning undefined in getUserRole", async () => {
+        (roleService as any).userRolesContainer.items.query = jest.fn().mockReturnValue({ fetchAll: jest.fn().mockResolvedValue({ resources: [{ userId: "user1", roleId: "badrole" }] }) });
+        roleService.getRoleById = jest.fn().mockResolvedValue(undefined);
+        const result = await roleService.getUserRole("user1", "tenant1");
+        expect(result).toBeUndefined();
+    });
+
+    it("should return null if user role not found", async () => {
+        (roleService as any).userRolesContainer.items.query = jest.fn().mockReturnValue({ fetchAll: jest.fn().mockResolvedValue({ resources: [] }) });
+        const result = await roleService.getUserRole("user2", "tenant1");
+        expect(result).toBeNull();
+    });
 });
