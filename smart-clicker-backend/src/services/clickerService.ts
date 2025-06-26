@@ -12,7 +12,7 @@ export class ClickerService {
 
   async getClicksAll(officeSpaceId: string): Promise<number> {
     const querySpec = {
-      query: "SELECT * FROM c WHERE c.officeSpaceId = @officeSpaceId",
+      query: "SELECT * FROM c WHERE c.Properties.officeSpaceId = @officeSpaceId",
       parameters: [
         {
           name: "@officeSpaceId",
@@ -34,7 +34,7 @@ export class ClickerService {
     const startTimestamp = Math.floor(startOfWeek.getTime() / 1000);
 
     const querySpec = {
-      query: "SELECT * FROM c WHERE c.officeSpaceId = @officeSpaceId AND c.timestamp >= @startTimestamp",
+      query: "SELECT * FROM c WHERE c.Properties.officeSpaceId = @officeSpaceId AND c.timestamp >= @startTimestamp",
       parameters: [
         {
           name: "@officeSpaceId",
@@ -59,7 +59,7 @@ export class ClickerService {
     const endTimestamp = Math.floor(endOfDay.getTime() / 1000);
 
     const query = {
-      query: "SELECT * FROM c WHERE c.officeSpaceId = @officeSpaceId AND c.timestamp >= @startTimestamp AND c.timestamp <= @endTimestamp",
+      query: "SELECT * FROM c WHERE c.Properties.officeSpaceId = @officeSpaceId AND c.timestamp >= @startTimestamp AND c.timestamp <= @endTimestamp",
       parameters: [
         {
           name: "@officeSpaceId",
@@ -78,7 +78,16 @@ export class ClickerService {
     const { resources } = await this.container.items
       .query(query)
       .fetchAll();
-    return resources;
+    return resources.map((item: any) => {
+      if (item.Body) {
+        try {
+          return JSON.parse(atob(item.Body));
+        } catch (e) {
+          return item;
+        }
+      }
+      return item;
+    });
   }
 
   async exportClickerDataByDateCSV(officeSpaceId: string, startDate: Date, endDate: Date): Promise<string> {
@@ -88,7 +97,7 @@ export class ClickerService {
     const endTimestamp = Math.floor(endOfDay.getTime() / 1000);
 
     const query = {
-      query: "SELECT * FROM c WHERE c.officeSpaceId = @officeSpaceId AND c.timestamp >= @startTimestamp AND c.timestamp <= @endTimestamp",
+      query: "SELECT * FROM c WHERE c.Properties.officeSpaceId = @officeSpaceId AND c.timestamp >= @startTimestamp AND c.timestamp <= @endTimestamp",
       parameters: [
         { name: "@officeSpaceId", value: officeSpaceId },
         { name: "@startTimestamp", value: startTimestamp },
@@ -99,12 +108,23 @@ export class ClickerService {
       .query(query)
       .fetchAll();
     if (!resources || resources.length === 0) return '';
+    // Decode Body property if present
+    const decoded = resources.map((item: any) => {
+      if (item.Body) {
+        try {
+          return JSON.parse(atob(item.Body));
+        } catch (e) {
+          return item;
+        }
+      }
+      return item;
+    });
     // Get all unique keys
-    const keys = Array.from(new Set(resources.flatMap((item: any) => Object.keys(item))));
+    const keys = Array.from(new Set(decoded.flatMap((item: any) => Object.keys(item))));
     // CSV header
     const header = keys.join(',');
     // CSV rows
-    const rows = resources.map((item: any) => keys.map(k => JSON.stringify(item[k] ?? '')).join(','));
+    const rows = decoded.map((item: any) => keys.map(k => JSON.stringify(item[k] ?? '')).join(','));
     return [header, ...rows].join('\n');
   }
 }
