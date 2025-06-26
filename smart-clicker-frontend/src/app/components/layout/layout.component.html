@@ -36,14 +36,6 @@
                                 'opacity-0 ml-[46px]': textVisible, 
                             }">
                     </div>
-                    <!-- <div
-                        class="transition-colors duration-300 transform bg-white hover:bg-white rounded-md flex justify-start relative h-20 overflow-hidden">
-                        <img src="wvh_logo_large.jpg" class="h-20 absolute"
-                            [ngClass]="{'opacity-100': textVisible, 'opacity-0': !textVisible}">
-
-                        <img src="wvh_logo.jpg" class="h-20 absolute"
-                            [ngClass]="{'opacity-100': !textVisible, 'opacity-0': textVisible}">
-                    </div> -->
                 </a>
                 <div class="p-4">
                     <button *ngFor="let item of navItems" [routerLink]="item.path"
@@ -55,7 +47,7 @@
                         </div>
                     </button>
                 </div>
-                <div class="absolute bottom-0 w-full p-4">
+                <!-- <div class="absolute bottom-0 w-full p-4">
                     <button [routerLink]="'/docs'"
                         [ngClass]="'/docs' === getRoute() ? 'bg-primary-light-blue' : 'bg-transparent'"
                         class="cursor-pointer transition-colors duration-300 transform hover:bg-primary-light-blue rounded-md text-primary-blue w-full h-12 mb-2">
@@ -64,7 +56,7 @@
                             <p *ngIf="textVisible" class="ml-4">API Docs</p>
                         </div>
                     </button>
-                </div>
+                </div> -->
             </div>
             <div class="flex-1"
                 [ngClass]="sidebarVisible ? 'ml-64 delay-100 duration-300 ease-out' : 'ml-20 delay-100 duration-300 ease-out'">

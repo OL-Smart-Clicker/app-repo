@@ -10,7 +10,7 @@ export class ClickerService {
     this.container = this.database.container("clicker-data");
   }
 
-  async getClickerData(officeSpaceId: string): Promise<any> {
+  async getClicksAll(officeSpaceId: string): Promise<number> {
     const querySpec = {
       query: "SELECT * FROM c WHERE c.officeSpaceId = @officeSpaceId",
       parameters: [
@@ -23,6 +23,88 @@ export class ClickerService {
     const { resources } = await this.container.items
       .query(querySpec)
       .fetchAll();
+    return resources.length;
+  }
+
+  async getClicksWeek(officeSpaceId: string): Promise<number> {
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - 6);
+    startOfWeek.setHours(0, 0, 0, 0);
+    const startTimestamp = Math.floor(startOfWeek.getTime() / 1000);
+
+    const querySpec = {
+      query: "SELECT * FROM c WHERE c.officeSpaceId = @officeSpaceId AND c.timestamp >= @startTimestamp",
+      parameters: [
+        {
+          name: "@officeSpaceId",
+          value: officeSpaceId,
+        },
+        {
+          name: "@startTimestamp",
+          value: startTimestamp,
+        },
+      ]
+    };
+    const { resources } = await this.container.items
+      .query(querySpec)
+      .fetchAll();
+    return resources.length;
+  }
+
+  async getClickerDataByDate(officeSpaceId: string, startDate: Date, endDate: Date): Promise<any> {
+    const startOfDay = new Date(Date.UTC(startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDate(), 0, 0, 0, 0));
+    const endOfDay = new Date(Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate(), 23, 59, 59, 999));
+    const startTimestamp = Math.floor(startOfDay.getTime() / 1000);
+    const endTimestamp = Math.floor(endOfDay.getTime() / 1000);
+
+    const query = {
+      query: "SELECT * FROM c WHERE c.officeSpaceId = @officeSpaceId AND c.timestamp >= @startTimestamp AND c.timestamp <= @endTimestamp",
+      parameters: [
+        {
+          name: "@officeSpaceId",
+          value: officeSpaceId,
+        },
+        {
+          name: "@startTimestamp",
+          value: startTimestamp,
+        },
+        {
+          name: "@endTimestamp",
+          value: endTimestamp,
+        },
+      ]
+    };
+    const { resources } = await this.container.items
+      .query(query)
+      .fetchAll();
     return resources;
+  }
+
+  async exportClickerDataByDateCSV(officeSpaceId: string, startDate: Date, endDate: Date): Promise<string> {
+    const startOfDay = new Date(Date.UTC(startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDate(), 0, 0, 0, 0));
+    const endOfDay = new Date(Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate(), 23, 59, 59, 999));
+    const startTimestamp = Math.floor(startOfDay.getTime() / 1000);
+    const endTimestamp = Math.floor(endOfDay.getTime() / 1000);
+
+    const query = {
+      query: "SELECT * FROM c WHERE c.officeSpaceId = @officeSpaceId AND c.timestamp >= @startTimestamp AND c.timestamp <= @endTimestamp",
+      parameters: [
+        { name: "@officeSpaceId", value: officeSpaceId },
+        { name: "@startTimestamp", value: startTimestamp },
+        { name: "@endTimestamp", value: endTimestamp },
+      ]
+    };
+    const { resources } = await this.container.items
+      .query(query)
+      .fetchAll();
+    if (!resources || resources.length === 0) return '';
+    // Get all unique keys
+    const keys = Array.from(new Set(resources.flatMap((item: any) => Object.keys(item))));
+    // CSV header
+    const header = keys.join(',');
+    // CSV rows
+    const rows = resources.map((item: any) => keys.map(k => JSON.stringify(item[k] ?? '')).join(','));
+    return [header, ...rows].join('\n');
   }
 }

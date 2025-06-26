@@ -7,9 +7,13 @@ import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { AppComponent } from "./app.component";
 import { AppRoutingModule, routes } from "./app.routes";
 import {
+  BarChartComponent,
+  EngagementChartComponent,
+  FloorPlannerComponent,
   LayoutComponent,
   ModalComponent,
   SpinnerComponent,
+  TimelineChartComponent,
 } from "./components";
 import { CommonModule } from "@angular/common";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
@@ -43,7 +47,7 @@ import { provideAnimationsAsync } from "@angular/platform-browser/animations/asy
 import { CalendarModule, DateAdapter } from "angular-calendar";
 import { adapterFactory } from "angular-calendar/date-adapters/date-fns";
 
-const APP_CONTAINERS = [LayoutComponent, ModalComponent, SpinnerComponent];
+const APP_CONTAINERS = [LayoutComponent, ModalComponent, SpinnerComponent, FloorPlannerComponent, BarChartComponent, EngagementChartComponent, TimelineChartComponent];
 
 const isIE =
   window.navigator.userAgent.indexOf("MSIE ") > -1 ||

@@ -10,10 +10,12 @@ import clickerController from "./controllers/clickerController";
 import qotdController from "./controllers/qotdController";
 import userController from "./controllers/userController";
 import officeController from "./controllers/officeController";
-import iotController from "./controllers/iotController";
+import { RoleService } from "./services/roleService";
 
 dotenv.config();
 const production = process.env.PRODUCTION === "true";
+
+const roleService = new RoleService();
 
 export const app = express();
 
@@ -62,7 +64,6 @@ app.use("/clicker-data", clickerController);
 app.use("/qotd", qotdController);
 app.use("/user", userController);
 app.use("/office", officeController);
-app.use("/iot", iotController);
 
 app.use((req, res, next) => {
   res.status(404).send("Not Found");
@@ -82,6 +83,7 @@ app.use(
 
 const port = process.env.BACKEND_PORT || 80;
 
-app.listen(port, () => {
+app.listen(port, async () => {
+  await roleService.init();
   console.log(`App listening on port ${port}`);
 });

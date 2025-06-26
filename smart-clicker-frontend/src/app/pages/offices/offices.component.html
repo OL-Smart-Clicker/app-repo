@@ -1,186 +1,235 @@
-<div>
-    <div class="container mx-auto p-3 w-full">
-        <!-- Header -->
-        <div class="mb-6">
-            <h1 class="text-2xl font-bold text-gray-900 mb-1">Office Management</h1>
-            <p class="text-gray-600 text-sm">Manage offices within your organization</p>
-        </div>
+<div class="container mx-auto p-3 w-full">
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900 mb-1">Office Management</h1>
+        <p class="text-gray-600 text-sm">Manage offices within your organization</p>
+    </div>
 
-        <!-- Loading State -->
-        <div *ngIf="loading" class="flex justify-center items-center py-12">
-            <app-spinner></app-spinner>
-        </div> <!-- Main Content -->
-        <div *ngIf="!loading" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center py-12">
+        <app-spinner></app-spinner>
+    </div> <!-- Main Content -->
+    <div *ngIf="!loading" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            <!-- Left Panel: Offices List -->
-            <div class="lg:col-span-1">
-                <div class="bg-white rounded-lg shadow-md p-4"> <!-- Search and Create Button -->
-                    <div class="mb-4">
-                        <div class="flex gap-2 mb-3">
-                            <div class="flex-1 relative">
-                                <input type="text" [(ngModel)]="searchTerm" (input)="onSearchChange()"
-                                    placeholder="Search offices..."
-                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-                                <ng-icon [svg]="icons.heroMagnifyingGlass"
-                                    class="absolute left-3 top-2.5 h-5 w-5 text-gray-400"></ng-icon>
-                            </div>
+        <!-- Left Panel: Offices List -->
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-lg shadow-md p-4"> <!-- Search and Create Button -->
+                <div class="mb-4">
+                    <div class="flex gap-2 mb-3">
+                        <div class="flex-1 relative">
+                            <input type="text" [(ngModel)]="searchTerm" (input)="onSearchChange()"
+                                placeholder="Search offices..."
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                            <ng-icon [svg]="icons.heroMagnifyingGlass"
+                                class="absolute left-3 top-2.5 h-5 w-5 text-gray-400"></ng-icon>
                         </div>
-                        <button (click)="startCreate()" *ngIf="officeCreate"
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center gap-2">
-                            <ng-icon [svg]="icons.heroPlus" class="h-5 w-5"></ng-icon>
-                            Create New Office
-                        </button>
                     </div>
+                    <button (click)="startCreate()" *ngIf="officeCreate"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center gap-2">
+                        <ng-icon [svg]="icons.heroPlus" class="h-5 w-5"></ng-icon>
+                        Create New Office
+                    </button>
+                </div>
 
-                    <!-- Offices List -->
-                    <div class="max-h-[60vh] overflow-y-auto scrollbar-thin">
-                        <div class="space-y-2 pr-2">
-                            <div *ngFor="let office of filteredOffices" (click)="selectOffice(office)"
-                                [class]="'p-4 border rounded-lg cursor-pointer transition-all duration-200 ' + 
+                <!-- Offices List -->
+                <div class="max-h-[60vh] overflow-y-auto scrollbar-thin">
+                    <div class="space-y-2 pr-2">
+                        <div *ngFor="let office of filteredOffices" (click)="selectOffice(office)"
+                            [class]="'p-4 border rounded-lg cursor-pointer transition-all duration-200 ' + 
                          (selectedOffice?.id === office.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50')">
-                                <div class="flex justify-between items-start">
-                                    <div class="flex-1">
-                                        <h3 class="font-medium text-gray-900">{{ office.name }}</h3>
-                                        <p class="text-sm text-gray-500 mt-1">Clickers: {{office.deviceCount}}</p>
-                                    </div>
-                                    <div class="flex gap-1 ml-2">
-                                        <button *ngIf="officeUpdate"
-                                            (click)="startEdit(office); $event.stopPropagation()"
-                                            class="p-1 text-gray-400 hover:text-blue-600 transition-colors"
-                                            title="Edit office">
-                                            <ng-icon [svg]="icons.heroPencil" class="h-4 w-4"></ng-icon>
-                                        </button>
-                                    </div>
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <h3 class="font-medium text-gray-900">{{ office.name }}</h3>
+                                    <p class="text-sm text-gray-500 mt-1">Clickers: {{office.deviceCount}}</p>
                                 </div>
-                            </div> <!-- Empty State -->
-                            <div *ngIf="filteredOffices.length === 0" class="text-center py-8">
-                                <ng-icon [svg]="icons.heroBuildingOffice"
-                                    class="h-12 w-12 text-gray-300 mx-auto mb-4"></ng-icon>
-                                <p class="text-gray-500">No offices found</p>
+                                <div class="flex gap-1 ml-2">
+                                    <button *ngIf="officeUpdate" (click)="startEdit(office); $event.stopPropagation()"
+                                        class="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                                        title="Edit office">
+                                        <ng-icon [svg]="icons.heroPencil" class="h-4 w-4"></ng-icon>
+                                    </button>
+                                </div>
                             </div>
+                        </div> <!-- Empty State -->
+                        <div *ngIf="filteredOffices.length === 0" class="text-center py-8">
+                            <ng-icon [svg]="icons.heroBuildingOffice"
+                                class="h-12 w-12 text-gray-300 mx-auto mb-4"></ng-icon>
+                            <p class="text-gray-500">No offices found</p>
                         </div>
                     </div>
                 </div>
-            </div> <!-- Right Panel: Office Details/Form -->
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-lg shadow-md p-4"> <!-- Create/Edit Form -->
-                    <div *ngIf="(isCreateMode && officeCreate) || (isEditMode && officeUpdate)">
-                        <div class="mb-4">
-                            <h2 class="text-xl font-semibold text-gray-900 mb-1">
-                                {{ isCreateMode ? 'Create New Office' : 'Edit Office' }}
-                            </h2>
-                            <p *ngIf="isCreateMode" class="text-gray-600 text-sm">
-                                Add a new office to your organization
-                            </p>
-                            <p *ngIf="!isCreateMode" class="text-gray-600 text-sm">
-                                Modify office details
-                            </p>
+            </div>
+        </div> <!-- Right Panel: Office Details/Form -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-lg shadow-md p-4"> <!-- Create/Edit Form -->
+                <div *ngIf="(isCreateMode && officeCreate) || (isEditMode && officeUpdate)">
+                    <div class="mb-4">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-1">
+                            {{ isCreateMode ? 'Create New Office' : 'Edit Office' }}
+                        </h2>
+                        <p *ngIf="isCreateMode" class="text-gray-600 text-sm">
+                            Add a new office to your organization
+                        </p>
+                        <p *ngIf="!isCreateMode" class="text-gray-600 text-sm">
+                            Modify office details
+                        </p>
+                    </div>
+
+                    <form (ngSubmit)="saveOffice()" class="space-y-4">
+                        <!-- Office Name -->
+                        <div>
+                            <label for="officeName" class="block text-sm font-medium text-gray-700 mb-2">
+                                Office Name
+                            </label>
+                            <input id="officeName" type="text" [(ngModel)]="formData.name" name="officeName" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Enter office name" />
                         </div>
 
-                        <form (ngSubmit)="saveOffice()" class="space-y-4">
-                            <!-- Office Name -->
-                            <div>
-                                <label for="officeName" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Office Name
-                                </label>
-                                <input id="officeName" type="text" [(ngModel)]="formData.name" name="officeName"
-                                    required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="Enter office name" />
-                            </div>
+                        <!-- Office WiFi Name -->
+                        <div>
+                            <label for="officeWifiName" class="block text-sm font-medium text-gray-700 mb-2">
+                                Office WiFi Network Name
+                            </label>
+                            <input id="officeWifiName" type="text" [(ngModel)]="formData.wifiName" name="officeWifiName"
+                                required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Enter office WiFi network name" />
+                        </div>
 
-                            <!-- Office WiFi Name -->
-                            <div>
-                                <label for="officeWifiName" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Office WiFi Network Name
-                                </label>
-                                <input id="officeWifiName" type="text" [(ngModel)]="formData.wifiName"
-                                    name="officeWifiName" required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="Enter office WiFi network name" />
-                            </div>
+                        <!-- Office WiFi Password -->
+                        <div>
+                            <label for="officeWifiPassword" class="block text-sm font-medium text-gray-700 mb-2">
+                                Office WiFi Network Password
+                            </label>
+                            <input id="officeWifiPassword" type="text" [(ngModel)]="formData.wifiPassword"
+                                name="officeWifiPassword" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Enter office WiFi network password" />
+                        </div>
 
-                            <!-- Office WiFi Password -->
-                            <div>
-                                <label for="officeWifiPassword" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Office WiFi Network Password
-                                </label>
-                                <input id="officeWifiPassword" type="text" [(ngModel)]="formData.wifiPassword"
-                                    name="officeWifiPassword" required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="Enter office WiFi network password" />
-                            </div>
-
-                            <!-- Form Actions -->
-                            <div class="flex gap-3 pt-4">
-                                <button type="submit" [disabled]="!formData.name || loading"
-                                    class="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center gap-2">
-                                    <app-spinner *ngIf="loading" class="w-4 h-4"></app-spinner>
-                                    <ng-icon *ngIf="!loading" [svg]="icons.heroCheck" class="h-5 w-5"></ng-icon>
-                                    {{ isCreateMode ? 'Create Office' : 'Update Office' }}
+                        <!-- Office Floor Plan Upload -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Office Floor Plan
+                                (optional)</label>
+                            <div class="flex items-center gap-4">
+                                <button type="button"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center gap-2"
+                                    (click)="fileInput.click()">
+                                    <ng-icon [svg]="icons.heroPhoto" class="h-5 w-5"></ng-icon>
+                                    <span>Select Image</span>
                                 </button>
-                                <button type="button" (click)="cancelEdit()" [disabled]="loading"
-                                    class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors duration-200">
-                                    Cancel
-                                </button>
+                                <span *ngIf="formData.floorPlanName" class="text-gray-700 text-sm">{{
+                                    formData.floorPlanName }}</span>
                             </div>
-                        </form>
-                    </div> <!-- Office Details View -->
-                    <div *ngIf="!isCreateMode && !isEditMode && selectedOffice">
-                        <div class="mb-4">
-                            <h2 class="text-xl font-semibold text-gray-900 mb-1">Office Details</h2>
-                            <p class="text-gray-600 text-sm">View office information</p>
-                        </div> <!-- Office Information -->
-                        <div class="space-y-4">
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <div class="flex justify-between items-start mb-4">
-                                    <h3 class="text-base font-medium text-gray-900">Office Information</h3>
+                            <input #fileInput id="officeFloorPlan" type="file" accept="image/*"
+                                (change)="onFloorPlanSelected($event)" class="hidden" />
+                            <img *ngIf="formData.floorPlan" [src]="formData.floorPlan" alt="Floor Plan Preview"
+                                class="mt-2 max-h-48 rounded border" />
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="flex gap-3 pt-4">
+                            <button type="submit" [disabled]="!formData.name || loading"
+                                class="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center gap-2">
+                                <app-spinner *ngIf="loading" class="w-4 h-4"></app-spinner>
+                                <ng-icon *ngIf="!loading" [svg]="icons.heroCheck" class="h-5 w-5"></ng-icon>
+                                {{ isCreateMode ? 'Create Office' : 'Update Office' }}
+                            </button>
+                            <button type="button" (click)="cancelEdit()" [disabled]="loading"
+                                class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors duration-200">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div> <!-- Office Details View -->
+                <div *ngIf="!isCreateMode && !isEditMode && selectedOffice && !showAnchorEditor">
+                    <div class="mb-4">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-1">Office Details</h2>
+                        <p class="text-gray-600 text-sm">View office information</p>
+                    </div> <!-- Office Information -->
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-base font-medium text-gray-900">Office Information</h3>
+                                <div class="flex justify-end gap-2">
                                     <button *ngIf="officeUpdate" (click)="startEdit(selectedOffice)"
                                         class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-1 px-3 rounded-md transition-colors duration-200 flex items-center gap-1">
                                         <ng-icon [svg]="icons.heroPencil" class="h-4 w-4"></ng-icon>
                                         Edit Office
                                     </button>
+                                    <button *ngIf="officeUpdate" type="button" (click)="openAnchorEditor()"
+                                        class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-1 px-3 rounded-md transition-colors duration-200 flex items-center gap-1">
+                                        <ng-icon [svg]="icons.heroMap" class="h-4 w-4"></ng-icon>
+                                        Anchor Mapping
+                                    </button>
                                 </div>
-
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-500">Office Name</label>
-                                        <p class="mt-1 text-base text-gray-900">{{ selectedOffice.name }}</p>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-500">Office WiFi Network
-                                            Name</label>
-                                        <p class="mt-1 text-base text-gray-900">{{ selectedOffice.wifiName }}</p>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-500">Office WiFi Network
-                                            Password</label>
-                                        <p class="mt-1 text-base text-gray-900">{{ selectedOffice.wifiPassword }}</p>
-                                    </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-500">Office Name</label>
+                                    <p class="mt-1 text-base text-gray-900">{{ selectedOffice.name }}</p>
                                 </div>
-                            </div><!-- Office Stats -->
-                            <div class="bg-blue-50 p-4 rounded-lg">
-                                <h3 class="text-base font-medium text-blue-900 mb-3">Office Statistics</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div class="text-center">
-                                        <p class="text-2xl font-bold text-blue-800">{{selectedOffice.deviceCount}}</p>
-                                        <p class="text-sm text-blue-600">Clicker Devices</p>
-                                    </div>
-                                    <div class="text-center">
-                                        <p class="text-2xl font-bold text-blue-800">{{selectedOffice.qotdCount}}</p>
-                                        <p class="text-sm text-blue-600">Questions so far</p>
-                                    </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-500">Office WiFi Network
+                                        Name</label>
+                                    <p class="mt-1 text-base text-gray-900">{{ selectedOffice.wifiName }}</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-500">Office WiFi Network
+                                        Password</label>
+                                    <p class="mt-1 text-base text-gray-900">{{ selectedOffice.wifiPassword }}</p>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <label class="block text-sm font-medium text-gray-500 mb-1">Floor Plan</label>
+                                <p *ngIf="!selectedOffice.floorPlan" class="mt-1 text-base text-gray-900">No floor
+                                    plan uploaded.</p>
+                                <div *ngIf="selectedOffice.floorPlan" class="relative">
+                                    <img #floorImg [src]="selectedOffice.floorPlan" alt="Floor Plan"
+                                        class="max-h-64 rounded border object-contain"
+                                        (load)="onDetailsImageLoad(floorImg)" />
+                                    <ng-container *ngIf="selectedOffice.anchors">
+                                        <div *ngFor="let anchor of selectedOffice.anchors; let i = index"
+                                            class="absolute w-5 h-5 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center anchor-dot z-100"
+                                            [style.left.px]="anchor.x * detailsImageWidth - 10"
+                                            [style.top.px]="anchor.y * detailsImageHeight - 10">
+                                            <span class="text-xs text-white">{{anchor.id}}</span>
+                                        </div>
+                                    </ng-container>
                                 </div>
                             </div>
                         </div>
-                    </div> <!-- Empty State -->
-                    <div *ngIf="!selectedOffice && !isCreateMode && !isEditMode" class="text-center py-12">
-                        <ng-icon [svg]="icons.heroBuildingOffice"
-                            class="h-16 w-16 text-gray-300 mx-auto mb-4"></ng-icon>
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">Select an Office</h3>
-                        <p class="text-gray-500">Choose an office from the list to view its details or create a new one
-                        </p>
+                        <!-- Office Stats -->
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h3 class="text-base font-medium text-blue-900 mb-3">Office Statistics</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold text-blue-800">{{selectedOffice.deviceCount}}</p>
+                                    <p class="text-sm text-blue-600">Clicker Devices</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold text-blue-800">{{selectedOffice.qotdCount}}</p>
+                                    <p class="text-sm text-blue-600">Questions so far</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </div>
+                <div *ngIf="showAnchorEditor">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                        Edit Anchor Placement
+                    </h2>
+                    <app-floor-planner [floorPlanUrl]="selectedOffice?.floorPlan || ''" [anchors]="anchorEditAnchors"
+                        [scale]="selectedOffice?.scale || 40" (anchorsChange)="onAnchorChange($event)"
+                        (scaleChange)="onScaleChange($event)" (done)="closeAnchorEditor($event)">
+                    </app-floor-planner>
+                </div> <!-- Empty State -->
+                <div *ngIf="!selectedOffice && !isCreateMode && !isEditMode" class="text-center py-12">
+                    <ng-icon [svg]="icons.heroBuildingOffice" class="h-16 w-16 text-gray-300 mx-auto mb-4"></ng-icon>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Select an Office</h3>
+                    <p class="text-gray-500">Choose an office from the list to view its details or create a new one
+                    </p>
                 </div>
             </div>
         </div>

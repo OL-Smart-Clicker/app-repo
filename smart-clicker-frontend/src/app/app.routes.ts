@@ -25,6 +25,14 @@ export const routes: Routes = [
         pathMatch: "full",
       },
       {
+        path: "data",
+        loadComponent: () =>
+          import("./pages/data/data.component").then((m) => m.DataComponent),
+        canActivate: [MsalGuard, GuardService],
+        pathMatch: "full",
+        data: { permission: Permission.DataView }
+      },
+      {
         path: "qotd",
         loadComponent: () =>
           import("./pages/qotd/qotd.component").then((m) => m.QotdComponent),

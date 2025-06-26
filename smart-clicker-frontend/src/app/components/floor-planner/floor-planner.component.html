@@ -1,0 +1,30 @@
+<p class="py-1">Resize the grid until one grid cell equals 1 square meter in the office.</p>
+<div class="flex items-center gap-2 mb-2">
+    <label for="gridSize" class="text-sm font-medium text-gray-700">Grid Size (px):</label>
+    <input id="gridSize" type="number" min="10" max="500" [value]="gridSize" (input)="onGridSizeInput($event)"
+        class="w-20 px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+</div>
+<div *ngIf="floorPlanUrl" class="relative w-full max-w-2xl mx-auto mt-4">
+    <div style="position: relative; display: inline-block;">
+        <img #floorImg [src]="floorPlanUrl" class="w-full h-auto object-contain max-h-[500px]"
+            (load)="onImageLoad(floorImg)" />
+        <div class="grid-overlay"
+            [ngStyle]="{width: imageWidth + 'px', height: imageHeight + 'px', 'background-size': gridSize + 'px ' + gridSize + 'px'}"
+            style="position: absolute; top: 0; left: 0;"></div>
+        <div *ngFor="let anchor of anchors; let i = index"
+            class="absolute w-5 h-5 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center cursor-pointer anchor-dot z-100"
+            [style.left.px]="anchor.x * imageWidth - 10" [style.top.px]="anchor.y * imageHeight - 10"
+            (click)="removeAnchor(i, $event)">
+            <span class="text-xs text-white">{{anchor.id}}</span>
+        </div>
+        <div class="absolute inset-0" (click)="addAnchor($event)" style="cursor: crosshair;"></div>
+    </div>
+</div>
+<p *ngIf="anchors.length < 3 && floorPlanUrl" class="text-red-500 mt-2">Add at least {{3 - anchors.length}} more {{3 -
+    anchors.length === 1 ? 'anchor' : 'anchors'}}
+</p>
+<p *ngIf="anchors.length >= 3 && floorPlanUrl" class="text-green-600 mt-2">{{anchors.length}} anchors placed</p>
+<div class="flex gap-2 mt-2">
+    <button type="button" class="bg-blue-600 text-white rounded px-4 py-2" (click)="save()">Save</button>
+    <button type="button" class="bg-gray-300 rounded px-4 py-2" (click)="cancel()">Cancel</button>
+</div>

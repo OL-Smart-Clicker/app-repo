@@ -9,6 +9,7 @@ import { FormsModule } from "@angular/forms";
 import { NgIconsModule } from "@ng-icons/core";
 import { SpinnerComponent } from "../../components";
 import { AuthService } from "../../services/auth.service";
+import { ToastService } from "angular-toastify";
 
 @Component({
     selector: "app-roles",
@@ -53,6 +54,7 @@ export class RolesComponent implements OnInit {
         private guardServ: GuardService,
         private roleService: RoleService,
         private authService: AuthService,
+        private toastService: ToastService
     ) { } icons = icons;
     async ngOnInit(): Promise<void> {
         const [role, _] = await Promise.all([
@@ -149,8 +151,9 @@ export class RolesComponent implements OnInit {
 
             await this.loadRoles();
             this.cancelEdit();
+            this.toastService.success('Role saved successfully.');
         } catch (error) {
-            console.error('Error saving role:', error);
+            this.toastService.error('Failed to save role.');
         } finally {
             this.loading = false;
         }
