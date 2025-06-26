@@ -78,7 +78,16 @@ export class ClickerService {
     const { resources } = await this.container.items
       .query(query)
       .fetchAll();
-    return resources;
+    return resources.map((item: any) => {
+      if (item.Body) {
+        try {
+          return JSON.parse(atob(item.Body));
+        } catch (e) {
+          return item;
+        }
+      }
+      return item;
+    });
   }
 
   async exportClickerDataByDateCSV(officeSpaceId: string, startDate: Date, endDate: Date): Promise<string> {
@@ -99,12 +108,23 @@ export class ClickerService {
       .query(query)
       .fetchAll();
     if (!resources || resources.length === 0) return '';
+    // Decode Body property if present
+    const decoded = resources.map((item: any) => {
+      if (item.Body) {
+        try {
+          return JSON.parse(atob(item.Body));
+        } catch (e) {
+          return item;
+        }
+      }
+      return item;
+    });
     // Get all unique keys
-    const keys = Array.from(new Set(resources.flatMap((item: any) => Object.keys(item))));
+    const keys = Array.from(new Set(decoded.flatMap((item: any) => Object.keys(item))));
     // CSV header
     const header = keys.join(',');
     // CSV rows
-    const rows = resources.map((item: any) => keys.map(k => JSON.stringify(item[k] ?? '')).join(','));
+    const rows = decoded.map((item: any) => keys.map(k => JSON.stringify(item[k] ?? '')).join(','));
     return [header, ...rows].join('\n');
   }
 }
