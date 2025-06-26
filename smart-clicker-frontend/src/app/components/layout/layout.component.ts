@@ -156,7 +156,7 @@ export class LayoutComponent implements OnInit {
   }
 
   @HostListener("window:resize", ["$event"])
-  onResize(event: Event): void {
+  onResize(_: Event): void {
     if (window.innerWidth <= 768) {
       this.sidebarVisible = false;
       this.textVisible = false;

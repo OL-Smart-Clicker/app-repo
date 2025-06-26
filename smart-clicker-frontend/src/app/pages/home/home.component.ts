@@ -215,8 +215,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.clicksWeek = await this.clickerServ.getClicksWeek(this.officeSpaceId);
       this.clicksAll = await this.clickerServ.getClicksAll(this.officeSpaceId);
       this.clickerDataToday = await this.clickerServ.getClickerDataByDate(this.officeSpaceId, new Date(), new Date());
-      // this.clickerDataWeek = await this.clickerServ.getClickerDataByDate(this.officeSpaceId, weekStartDate, new Date());
-      // this.clickerDataYear = await this.clickerServ.getClickerDataByDate(this.officeSpaceId, yearStartDate, new Date());
+      this.clickerDataWeek = await this.clickerServ.getClickerDataByDate(this.officeSpaceId, weekStartDate, new Date());
+      this.clickerDataYear = await this.clickerServ.getClickerDataByDate(this.officeSpaceId, yearStartDate, new Date());
     } catch (error) {
       console.error('Error loading clicker data:', error);
     }

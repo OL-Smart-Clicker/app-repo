@@ -19,7 +19,7 @@ export class EngagementChartComponent implements OnChanges, AfterViewInit {
         this.renderChart();
     }
 
-    ngOnChanges(changes: SimpleChanges) {
+    ngOnChanges(_: SimpleChanges) {
         if (this.container) {
             this.renderChart();
         }

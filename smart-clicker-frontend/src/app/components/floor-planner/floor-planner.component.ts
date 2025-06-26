@@ -52,9 +52,9 @@ export class FloorPlannerComponent implements OnChanges {
         const container = (event.target as HTMLElement).closest('div[style*="position: relative"]') as HTMLElement;
         if (!container) return;
         const rect = container.getBoundingClientRect();
-        let idStr = prompt('Enter anchor ID (number):');
+        const idStr = prompt('Enter anchor ID (number):');
         if (idStr === null) return;
-        let id = Number(idStr);
+        const id = Number(idStr);
         if (!Number.isInteger(id) || id < 1) {
             alert('Invalid ID. Please enter a positive integer.');
             return;

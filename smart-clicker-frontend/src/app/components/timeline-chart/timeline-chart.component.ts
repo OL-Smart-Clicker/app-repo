@@ -18,7 +18,7 @@ export class TimelineChartComponent implements OnChanges, AfterViewInit {
         this.renderChart();
     }
 
-    ngOnChanges(changes: SimpleChanges) {
+    ngOnChanges(_: SimpleChanges) {
         if (this.container) {
             this.renderChart();
         }
@@ -76,7 +76,7 @@ export class TimelineChartComponent implements OnChanges, AfterViewInit {
             .attr('transform', `translate(0,${height})`)
             .call(d3.axisBottom(x)
                 .ticks(Math.min(data.length, 5))
-                .tickFormat((domainValue, i) => {
+                .tickFormat((domainValue, _) => {
                     if (domainValue instanceof Date) {
                         return d3.timeFormat('%b %d')(domainValue);
                     } else if (typeof domainValue === 'number') {

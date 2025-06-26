@@ -10,7 +10,6 @@ import * as d3 from 'd3';
 export class BarChartComponent implements OnInit, OnChanges, AfterViewInit {
     @Input() data: any[] = [];
 
-    private svg: any;
     private container: any;
     private weekData: { name: string, value: number }[] = [];
 
@@ -92,12 +91,6 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit {
             .selectAll('text')
             .attr('class', 'axis-label')
             .style('text-anchor', 'center');
-
-        // Y axis (show only integer ticks)
-        // svg.append('g')
-        //     .call(d3.axisLeft(y)
-        //         .ticks(y.domain()[1])
-        //         .tickFormat((d: any) => Number.isInteger(d) ? d : ''));
 
         // Get current day name (e.g., 'Mon', 'Tue', ...)
         const now = new Date();
