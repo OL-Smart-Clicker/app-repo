@@ -30,7 +30,7 @@ export class TimelineChartComponent implements OnChanges, AfterViewInit {
         // Aggregate clicks per day
         const dateCounts: { [date: string]: number } = {};
         for (const click of this.data) {
-            const ts = click.timestamp ? new Date(click.timestamp) : null;
+            const ts = click.timestamp ? new Date(click.timestamp * 1000) : null;
             if (!ts) continue;
             const dateStr = ts.toISOString().slice(0, 10); // YYYY-MM-DD
             dateCounts[dateStr] = (dateCounts[dateStr] || 0) + 1;

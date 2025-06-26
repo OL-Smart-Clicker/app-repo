@@ -108,7 +108,7 @@ export class DataComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     computeSummaryStatistics() {
-        const data = Array.isArray(this.clickerData) && this.clickerData.length > 0 ? this.clickerData : this.clickerData;
+        const data = Array.isArray(this.clickerData) && this.clickerData;
         if (!data || data.length === 0) {
             this.totalClicks = 0;
             this.busiestLabel = '';
@@ -122,7 +122,7 @@ export class DataComponent implements OnInit, OnDestroy, AfterViewInit {
         // Busiest day only
         const dayCounts: { [day: string]: number } = {};
         timestamps.forEach(ts => {
-            const date = new Date(ts);
+            const date = new Date(ts * 1000);
             const dayKey = date.toISOString().slice(0, 10); // YYYY-MM-DD
             dayCounts[dayKey] = (dayCounts[dayKey] || 0) + 1;
         });
@@ -142,7 +142,7 @@ export class DataComponent implements OnInit, OnDestroy, AfterViewInit {
         } else {
             let totalDiff = 0;
             for (let i = 1; i < timestamps.length; i++) {
-                totalDiff += (timestamps[i] - timestamps[i - 1]);
+                totalDiff += (timestamps[i] * 1000 - timestamps[i - 1] * 1000);
             }
             const avgMs = totalDiff / (timestamps.length - 1);
             // Format as hh:mm:ss
