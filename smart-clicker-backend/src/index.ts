@@ -35,7 +35,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: production, // set this to true on production
+      secure: production,
     },
   })
 );
