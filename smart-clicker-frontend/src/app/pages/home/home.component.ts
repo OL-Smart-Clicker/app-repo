@@ -150,7 +150,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.trilaterateLeastSquares(
         this.anchors,
         // Convert number[] to {id, distance}[] by pairing with anchor ids
-        (cd.distances || []).map((distance: number, i: number) => ({
+        (cd.uwb.distances || []).map((distance: number, i: number) => ({
           id: this.anchors[i]?.id,
           distance
         })).filter((d: { id: number | undefined, distance: number }) => d.id !== undefined),
