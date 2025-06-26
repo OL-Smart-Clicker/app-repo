@@ -97,9 +97,10 @@
                             <td class="px-4 py-2 border-b">{{ row.deviceId || row.id }}</td>
                             <td class="px-4 py-2 border-b">{{ row.timestamp * 1000 | date:'yyyy-MM-dd HH:mm:ss' }}</td>
                             <td class="px-4 py-2 border-b">
-                                <ng-container *ngIf="row.distances && row.distances.length; else noDist">
-                                    <span *ngFor="let d of row.distances; let i = index">
-                                        {{ d }}<span *ngIf="i < row.distances.length - 1">, </span>
+                                <ng-container *ngIf="row.uwb.distances && row.uwb.distances.length; else noDist">
+                                    <span *ngFor="let obj of row.uwb.distances; let i = index">
+                                        Anchor {{obj.id}}: {{ obj.distance }} m<span
+                                            *ngIf="i < row.uwb.distances.length - 1">, </span>
                                     </span>
                                 </ng-container>
                                 <ng-template #noDist><span class="text-gray-400">-</span></ng-template>
