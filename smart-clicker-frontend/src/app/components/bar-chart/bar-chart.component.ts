@@ -42,11 +42,11 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit {
         const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
         const bins = Array(7).fill(0);
         for (const d of this.data) {
-            const date = new Date(d.timestamp);
+            const date = new Date(d.timestamp * 1000);
             const dayIdx = (date.getDay() + 6) % 7;
             const weekStart = monday.getTime();
             const weekEnd = weekStart + 7 * 24 * 60 * 60 * 1000;
-            if (d.timestamp >= weekStart && d.timestamp < weekEnd) {
+            if (d.timestamp * 1000 >= weekStart && d.timestamp * 1000 < weekEnd) {
                 bins[dayIdx]++;
             }
         }

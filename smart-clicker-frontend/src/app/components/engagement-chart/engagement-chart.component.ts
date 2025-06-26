@@ -8,7 +8,7 @@ import * as d3 from 'd3';
     styleUrl: './engagement-chart.component.css',
 })
 export class EngagementChartComponent implements OnChanges, AfterViewInit {
-    @Input() data: { timestamp: number }[] = [];
+    @Input() data: any[] = [];
 
     private container: any;
 
@@ -36,7 +36,7 @@ export class EngagementChartComponent implements OnChanges, AfterViewInit {
         };
         const weekCounts: { [key: string]: number } = {};
         this.data.forEach(d => {
-            const date = new Date(d.timestamp);
+            const date = new Date(d.timestamp * 1000);
             const key = `${date.getFullYear()}-${date.getMonth()}-${parseWeek(date)}`;
             weekCounts[key] = (weekCounts[key] || 0) + 1;
         });
