@@ -35,9 +35,23 @@ export class DataComponent implements OnInit, OnDestroy, AfterViewInit {
     floorPlan: string = '';
     anchors: { id: number, x: number, y: number }[] = [];
 
-    clickerDataObjects: { id: string, distances: number[] }[] = [];
     trilateratedPos: { x: number, y: number } | null = null;
     trilateratedPositions: { x: number, y: number }[] = [];
+
+    distances: any[] = [
+        {
+            id: 1,
+            distance: 2.139286
+        },
+        {
+            id: 2,
+            distance: 0.957143
+        },
+        {
+            id: 3,
+            distance: 0.761429
+        }
+    ]
 
     detailsImageWidth = 0;
     detailsImageHeight = 0;
@@ -218,7 +232,7 @@ export class DataComponent implements OnInit, OnDestroy, AfterViewInit {
         this.trilateratedPositions = this.clickerData.map(cd =>
             this.trilaterateLeastSquares(
                 this.anchors,
-                (cd.distances || []).map((distance: number, i: number) => ({
+                (cd.uwb.distances || []).map((distance: number, i: number) => ({
                     id: this.anchors[i]?.id,
                     distance
                 })).filter((d: { id: number | undefined, distance: number }) => d.id !== undefined),
