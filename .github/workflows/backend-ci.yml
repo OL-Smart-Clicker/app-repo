@@ -83,6 +83,12 @@ jobs:
       - name: Install backend npm dependencies
         run: cd smart-clicker-backend && npm install
 
+      - name: Create .env file
+        run: |
+          cd smart-clicker-backend
+          touch .env
+          echo "${{ secrets.BACKEND_ENV }}" > .env
+
       - name: Run unit tests
         run: |
           cd smart-clicker-backend 
