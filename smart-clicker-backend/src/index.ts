@@ -83,7 +83,7 @@ app.use(
 
 const port = process.env.BACKEND_PORT || 80;
 
-app.listen(port, async () => {
-  await roleService.init();
+app.listen(port, () => {
+  // await roleService.init();
   console.log(`App listening on port ${port}`);
 });
