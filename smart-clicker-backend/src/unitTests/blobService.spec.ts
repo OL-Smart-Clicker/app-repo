@@ -20,6 +20,7 @@ jest.mock('@azure/storage-blob', () => {
         }
     };
 });
+jest.mock('../db/db', () => require('./mockDb'));
 
 import { BlobService } from '../services/blobService';
 

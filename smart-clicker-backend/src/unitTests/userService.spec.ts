@@ -2,6 +2,7 @@ import { UserService } from '../services/userService';
 
 jest.mock('../auth/graphAuth', () => ({ getGraphToken: jest.fn().mockResolvedValue({ accessToken: 'token' }), graphTokenRequest: {} }));
 jest.mock('axios');
+jest.mock('../db/db', () => require('./mockDb'));
 
 describe('UserService', () => {
     let userService: UserService;
@@ -21,7 +22,7 @@ describe('UserService', () => {
         userService['roleServ'].getUserRole = jest.fn().mockResolvedValue(mockRole);
         const users = await userService.getUsers('tenant1');
         expect(users.length).toBe(2);
-        expect(users[0].role).toEqual(mockRole);
+        expect(users[0]).toMatchObject({ ...mockUsers[0], role: mockRole });
     });
 
     it('should handle error in getUsers', async () => {

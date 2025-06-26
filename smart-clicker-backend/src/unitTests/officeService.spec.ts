@@ -1,16 +1,4 @@
-jest.mock('../db/db', () => ({
-    container: jest.fn().mockReturnValue({
-        items: {
-            query: jest.fn().mockReturnValue({
-                fetchAll: jest.fn().mockResolvedValue({ resources: [] })
-            })
-        },
-        item: jest.fn().mockReturnValue({
-            read: jest.fn().mockResolvedValue({ resource: null }),
-            replace: jest.fn().mockResolvedValue({ resource: null })
-        })
-    })
-}));
+jest.mock('../db/db', () => require('./mockDb'));
 
 import { OfficeService } from '../services/officeService';
 
@@ -54,5 +42,7 @@ describe('OfficeService', () => {
         (officeService as any).qotdService.getQotdsUntilToday = jest.fn().mockResolvedValue(3);
         const result = await officeService.getOfficesForTenant('tenant');
         expect(Array.isArray(result)).toBe(true);
+        // If you want to check object structure, use toMatchObject
+        // expect(result[0]).toMatchObject({ id: expect.any(String) });
     });
 });

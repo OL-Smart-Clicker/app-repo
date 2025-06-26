@@ -6,6 +6,8 @@ jest.mock('azure-iot-provisioning-service', () => ({
 
 jest.mock('azure-iothub', () => ({ Registry: { fromConnectionString: jest.fn().mockReturnValue({ createQuery: jest.fn().mockReturnValue({ hasMoreResults: false, nextAsTwin: jest.fn().mockResolvedValue({ result: [] }) }) }) } }));
 
+jest.mock('../db/db', () => require('./mockDb'));
+
 describe('IoTService', () => {
     let iotService: IoTService;
     beforeEach(() => {
