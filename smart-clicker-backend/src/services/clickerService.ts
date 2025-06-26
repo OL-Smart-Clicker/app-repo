@@ -34,7 +34,7 @@ export class ClickerService {
     const startTimestamp = Math.floor(startOfWeek.getTime() / 1000);
 
     const querySpec = {
-      query: "SELECT * FROM c WHERE c.Properties.officeSpaceId = @officeSpaceId AND c.timestamp >= @startTimestamp",
+      query: "SELECT * FROM c WHERE c.Properties.officeSpaceId = @officeSpaceId AND c._ts >= @startTimestamp",
       parameters: [
         {
           name: "@officeSpaceId",
@@ -59,7 +59,7 @@ export class ClickerService {
     const endTimestamp = Math.floor(endOfDay.getTime() / 1000);
 
     const query = {
-      query: "SELECT * FROM c WHERE c.Properties.officeSpaceId = @officeSpaceId AND c.timestamp >= @startTimestamp AND c.timestamp <= @endTimestamp",
+      query: "SELECT * FROM c WHERE c.Properties.officeSpaceId = @officeSpaceId AND c._ts >= @startTimestamp AND c._ts <= @endTimestamp",
       parameters: [
         {
           name: "@officeSpaceId",
@@ -97,7 +97,7 @@ export class ClickerService {
     const endTimestamp = Math.floor(endOfDay.getTime() / 1000);
 
     const query = {
-      query: "SELECT * FROM c WHERE c.Properties.officeSpaceId = @officeSpaceId AND c.timestamp >= @startTimestamp AND c.timestamp <= @endTimestamp",
+      query: "SELECT * FROM c WHERE c.Properties.officeSpaceId = @officeSpaceId AND c._ts >= @startTimestamp AND c._ts <= @endTimestamp",
       parameters: [
         { name: "@officeSpaceId", value: officeSpaceId },
         { name: "@startTimestamp", value: startTimestamp },
