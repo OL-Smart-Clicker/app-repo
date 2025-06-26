@@ -158,7 +158,8 @@
                                         <ng-icon [svg]="icons.heroPencil" class="h-4 w-4"></ng-icon>
                                         Edit Office
                                     </button>
-                                    <button *ngIf="officeUpdate" type="button" (click)="openAnchorEditor()"
+                                    <button *ngIf="officeUpdate && selectedOffice.floorPlan" type="button"
+                                        (click)="openAnchorEditor()"
                                         class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-1 px-3 rounded-md transition-colors duration-200 flex items-center gap-1">
                                         <ng-icon [svg]="icons.heroMap" class="h-4 w-4"></ng-icon>
                                         Anchor Mapping
