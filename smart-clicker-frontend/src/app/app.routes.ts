@@ -13,21 +13,24 @@ export const routes: Routes = [
     pathMatch: "full",
   },
   {
-    path: "home",
-    loadComponent: () =>
-      import("./pages/home/home.component").then((m) => m.HomeComponent),
-  },
-  {
-    path: "admin",
+    path: "",
     component: LayoutComponent,
     canActivate: [MsalGuard],
     children: [
       {
-        path: "",
+        path: "home",
         loadComponent: () =>
           import("./pages/home/home.component").then((m) => m.HomeComponent),
         canActivate: [MsalGuard],
         pathMatch: "full",
+      },
+      {
+        path: "data",
+        loadComponent: () =>
+          import("./pages/data/data.component").then((m) => m.DataComponent),
+        canActivate: [MsalGuard, GuardService],
+        pathMatch: "full",
+        data: { permission: Permission.DataView }
       },
       {
         path: "qotd",

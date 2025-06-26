@@ -6,11 +6,11 @@
         "description": "Swagger documentation for the project's API routes."
     },
     "paths": {
-        "/template": {
+        "/users": {
             "get": {
-                "summary": "Get all objects",
+                "summary": "Get all users",
                 "tags": [
-                    "Object"
+                    "User"
                 ],
                 "security": [
                     {
@@ -19,101 +19,105 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "A list of objects",
+                        "description": "A list of users",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Object"
+                                        "$ref": "#/components/schemas/User"
                                     }
                                 }
                             }
                         }
                     },
-                    "500": {
-                        "description": "Error getting objects!"
-                    }
-                }
-            },
-            "post": {
-                "summary": "Create a new object",
-                "tags": [
-                    "Object"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Object created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Object"
-                                }
-                            }
-                        }
+                    "400": {
+                        "description": "Bad request"
                     },
                     "500": {
-                        "description": "Error creating object!"
-                    }
-                }
-            },
-            "patch": {
-                "summary": "Update an object",
-                "tags": [
-                    "Object"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Object updated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Error updating object!"
+                        "description": "Error getting users!"
                     }
                 }
             }
         },
-        "/template/with/{parameters}": {
-            "delete": {
-                "summary": "Delete an object",
+        "/roles": {
+            "get": {
+                "summary": "Get all roles",
                 "tags": [
-                    "Object"
+                    "Role"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of roles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Role"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Error getting roles!"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new role",
+                "tags": [
+                    "Role"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Role"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Role created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Role"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Error creating role!"
+                    }
+                }
+            }
+        },
+        "/roles/{id}": {
+            "put": {
+                "summary": "Update a role",
+                "tags": [
+                    "Role"
                 ],
                 "security": [
                     {
@@ -122,21 +126,725 @@
                 ],
                 "parameters": [
                     {
-                        "name": "parameter",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Role"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Role updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Role"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Error updating role!"
+                    }
+                }
+            }
+        },
+        "/roles/assign": {
+            "post": {
+                "summary": "Assign role to user",
+                "tags": [
+                    "Role"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "userId": {
+                                        "type": "string"
+                                    },
+                                    "roleId": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Role assigned successfully"
                         },
-                        "description": "The object parameter"
+                        "400": {
+                            "description": "Bad request"
+                        },
+                        "500": {
+                            "description": "Error assigning role!"
+                        }
+                    }
+                }
+            }
+        },
+        "/roles/self": {
+            "get": {
+                "summary": "Get current user's role",
+                "tags": [
+                    "Role"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Object deleted successfully"
+                        "description": "User's role",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Role"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No role assigned to user"
                     },
                     "500": {
-                        "description": "Error deleting object!"
+                        "description": "Error getting user role!"
+                    }
+                }
+            }
+        },
+        "/qotd": {
+            "post": {
+                "summary": "Create a new QOTD",
+                "tags": [
+                    "QOTD"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Qotd"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "QOTD created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Qotd"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error creating QOTD"
+                    }
+                }
+            }
+        },
+        "/qotd/office/{officeSpaceId}": {
+            "get": {
+                "summary": "Get all QOTDs for an office",
+                "tags": [
+                    "QOTD"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "officeSpaceId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of QOTDs",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Qotd"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Error fetching QOTDs"
+                    }
+                }
+            }
+        },
+        "/qotd/office/{officeSpaceId}/today": {
+            "get": {
+                "summary": "Get today's QOTD for an office",
+                "tags": [
+                    "QOTD"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "officeSpaceId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Today's QOTD",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Qotd"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No QOTD found for today"
+                    },
+                    "500": {
+                        "description": "Error fetching today's QOTD"
+                    }
+                }
+            }
+        },
+        "/qotd/{id}/office/{officeSpaceId}": {
+            "get": {
+                "summary": "Get a QOTD by ID and officeSpaceId",
+                "tags": [
+                    "QOTD"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "officeSpaceId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "QOTD",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Qotd"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "QOTD not found"
+                    },
+                    "500": {
+                        "description": "Error fetching QOTD"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a QOTD",
+                "tags": [
+                    "QOTD"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "officeSpaceId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "QOTD deleted successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Error deleting QOTD"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update a QOTD",
+                "tags": [
+                    "QOTD"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "officeSpaceId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Qotd"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "QOTD updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Qotd"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "QOTD not found"
+                    },
+                    "500": {
+                        "description": "Error updating QOTD"
+                    }
+                }
+            }
+        },
+        "/offices": {
+            "get": {
+                "summary": "Get all offices",
+                "tags": [
+                    "Office"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of offices",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Office"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Error getting offices!"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new office",
+                "tags": [
+                    "Office"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Office"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Office created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Office"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Error creating office!"
+                    }
+                }
+            }
+        },
+        "/offices/{id}": {
+            "put": {
+                "summary": "Update an office",
+                "tags": [
+                    "Office"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Office"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Office updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Office"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Office not found"
+                    },
+                    "500": {
+                        "description": "Error updating office!"
+                    }
+                }
+            }
+        },
+        "/offices/{id}/anchors": {
+            "put": {
+                "summary": "Update office anchors",
+                "tags": [
+                    "Office"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "anchors": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "number"
+                                                },
+                                                "x": {
+                                                    "type": "number"
+                                                },
+                                                "y": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "scale": {
+                                        "type": "number"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Office anchors updated successfully",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/Office"
+                                    }
+                                }
+                            }
+                        },
+                        "400": {
+                            "description": "Bad request"
+                        },
+                        "404": {
+                            "description": "Office not found"
+                        },
+                        "500": {
+                            "description": "Error updating office anchors!"
+                        }
+                    }
+                }
+            }
+        },
+        "/clicker/{officeSpaceId}": {
+            "get": {
+                "summary": "Get clicker data by date range or export CSV",
+                "tags": [
+                    "Clicker"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "officeSpaceId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "startDate",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "endDate",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "csv",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Clicker data or CSV export"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Error!"
+                    }
+                }
+            }
+        },
+        "/clicker/{officeSpaceId}/all": {
+            "get": {
+                "summary": "Get all clicker data for office",
+                "tags": [
+                    "Clicker"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "officeSpaceId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All clicker data"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Error!"
+                    }
+                }
+            }
+        },
+        "/clicker/{officeSpaceId}/week": {
+            "get": {
+                "summary": "Get clicker data for the week",
+                "tags": [
+                    "Clicker"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "officeSpaceId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Weekly clicker data"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Error!"
                     }
                 }
             }
@@ -144,16 +852,130 @@
     },
     "components": {
         "schemas": {
-            "Object": {
+            "User": {
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "string",
-                        "description": "Unique identifier of the object"
+                        "type": "string"
+                    },
+                    "role": {
+                        "$ref": "#/components/schemas/Role"
+                    },
+                    "userPrincipalName": {
+                        "type": "string"
+                    },
+                    "givenName": {
+                        "type": "string"
+                    },
+                    "surname": {
+                        "type": "string"
+                    },
+                    "displayName": {
+                        "type": "string"
                     }
                 },
                 "required": [
                     "id"
+                ]
+            },
+            "Role": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "tenantId": {
+                        "type": "string"
+                    },
+                    "roleName": {
+                        "type": "string"
+                    },
+                    "permissions": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "tenantId",
+                    "roleName",
+                    "permissions"
+                ]
+            },
+            "Qotd": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "officeSpaceId": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "question": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "officeSpaceId",
+                    "date",
+                    "question"
+                ]
+            },
+            "Office": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "tenantId": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "wifiName": {
+                        "type": "string"
+                    },
+                    "wifiPassword": {
+                        "type": "string"
+                    },
+                    "floorPlan": {
+                        "type": "string"
+                    },
+                    "anchors": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number"
+                                },
+                                "x": {
+                                    "type": "number"
+                                },
+                                "y": {
+                                    "type": "number"
+                                }
+                            }
+                        }
+                    },
+                    "deviceCount": {
+                        "type": "integer"
+                    },
+                    "qotdCount": {
+                        "type": "integer"
+                    },
+                    "scale": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "tenantId",
+                    "name",
+                    "wifiName",
+                    "wifiPassword"
                 ]
             }
         },

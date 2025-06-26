@@ -26,6 +26,9 @@ import { ToastService } from "angular-toastify";
 import { CommonModule } from "@angular/common";
 import { OfficeService } from "../../services/office.service";
 import { Subscription } from "rxjs";
+import { RoleService } from "../../services/role.service";
+import { Permission } from "../../types/permission";
+import { SpinnerComponent } from '../../components';
 
 @Component({
   selector: "app-qotd",
@@ -38,6 +41,7 @@ import { Subscription } from "rxjs";
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
+    SpinnerComponent,
   ],
   styles: `
   ::ng-deep .cal-month-view .cal-day-badge {
@@ -51,7 +55,8 @@ export class QotdComponent implements OnInit, OnDestroy {
     private qotdService: QotdService,
     private formBuilder: FormBuilder,
     private toastService: ToastService,
-    private officeServ: OfficeService
+    private officeServ: OfficeService,
+    private roleService: RoleService
   ) {
     this.editForm = this.formBuilder.group({
       question: new FormControl<string>("", [
@@ -90,14 +95,30 @@ export class QotdComponent implements OnInit, OnDestroy {
   editingQotd: Qotd | null = null;
   editModal: boolean = false;
   addModal: boolean = false;
+  createQotd: boolean = false;
+  updateQotd: boolean = false;
+  deleteQotd: boolean = false;
+  loading = false;
 
   officeSpaceId: string = '';
   private officeSub: Subscription | undefined;
 
   async ngOnInit(): Promise<void> {
+    this.loading = true;
+    const role = await this.roleService.getUserRole();
+    const [createQotd, updateQotd, deleteQotd] = await Promise.all([
+      this.guardServ.hasAccess(role, Permission.QuestionCreate),
+      this.guardServ.hasAccess(role, Permission.QuestionUpdate),
+      this.guardServ.hasAccess(role, Permission.QuestionDelete),
+    ]);
+    this.createQotd = createQotd;
+    this.updateQotd = updateQotd;
+    this.deleteQotd = deleteQotd;
     this.officeSub = this.officeServ.officeId$.subscribe(async (id) => {
+      this.loading = true;
       this.officeSpaceId = id;
       await this.getQotds();
+      this.loading = false;
     });
   }
 
@@ -108,6 +129,7 @@ export class QotdComponent implements OnInit, OnDestroy {
   }
 
   async getQotds() {
+    this.loading = true;
     await this.qotdService.getQotdsForOffice(this.officeSpaceId).then((qotds) => {
       this.qotds = qotds.map((qotd) => {
         return {
@@ -121,48 +143,74 @@ export class QotdComponent implements OnInit, OnDestroy {
           },
         } as CalendarEvent;
       });
+      this.loading = false;
     });
   }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
-    if (isSameMonth(date, this.viewDate)) {
-      if (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) {
-        this.activeDayIsOpen = false;
-      } else {
-        if (events.length === 0 && date > new Date()) {
-          this.handleAdd(date);
-        } else if (events.length === 0 && date < new Date()) {
-          this.toastService.error("You cannot select a past date.");
+    if (this.createQotd) {
+      if (isSameMonth(date, this.viewDate)) {
+        if (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) {
+          this.activeDayIsOpen = false;
         } else {
-          this.activeDayIsOpen = true;
+          if (events.length === 0 && date > new Date()) {
+            this.handleAdd(date);
+          } else if (events.length === 0 && date < new Date()) {
+            this.toastService.error("You cannot select a past date.");
+          } else {
+            this.activeDayIsOpen = true;
+          }
         }
+        this.viewDate = date;
       }
-      this.viewDate = date;
     }
   }
 
   async eventTimesChanged({
     event,
     newStart,
-    newEnd
+    newEnd: _
   }: CalendarEventTimesChangedEvent): Promise<void> {
+    if (!this.updateQotd) return;
     if (newStart < new Date()) {
       this.toastService.error("You cannot change the date to a past date.");
       return;
     }
-    event.start = newStart;
-    const newQotd: Qotd = {
-      id: event.id as string,
-      question: event.title,
-      date: new Date(newStart),
-      officeSpaceId: event.meta.officeSpaceId,
-    };
-    this.handleEdit(event, false);
-    await this.onEdit(newQotd);
+    if (event.start < new Date()) {
+      const newQotd: Qotd = {
+        id: crypto.randomUUID(),
+        question: event.title,
+        date: new Date(newStart),
+        officeSpaceId: event.meta.officeSpaceId,
+      };
+      try {
+        const response = await this.qotdService.createQotd(newQotd);
+        if (response) {
+          this.toastService.success("QOTD copied to new date successfully.");
+          await this.getQotds();
+        } else {
+          this.toastService.error("Failed to copy QOTD.");
+        }
+      } catch (error) {
+        this.toastService.error("An error occurred while copying the QOTD.");
+        console.error("Error copying QOTD:", error);
+      }
+    } else {
+      event.start = newStart;
+      const updatedQotd: Qotd = {
+        id: event.id as string,
+        question: event.title,
+        date: new Date(newStart),
+        officeSpaceId: event.meta.officeSpaceId,
+      };
+      this.handleEdit(event, false);
+      await this.onEdit(updatedQotd);
+    }
     this.activeDayIsOpen = false;
   }
 
   async deleteEvent(eventToDelete: CalendarEvent): Promise<void> {
+    if (!this.deleteQotd) return;
     try {
       if (eventToDelete.start < new Date()) {
         this.toastService.error("You cannot delete a QOTD in the past.");
@@ -197,6 +245,7 @@ export class QotdComponent implements OnInit, OnDestroy {
   }
 
   async onEdit(editingQotd: Qotd): Promise<void> {
+    if (!this.updateQotd) return;
     if (this.editForm.invalid) {
       this.toastService.error("Please fill in all required fields.");
       return;
@@ -234,6 +283,7 @@ export class QotdComponent implements OnInit, OnDestroy {
   }
 
   handleEdit(event: CalendarEvent, modal: boolean): void {
+    if (!this.updateQotd) return;
     this.editingQotd = {
       id: event.id as string,
       question: event.title,
@@ -258,6 +308,7 @@ export class QotdComponent implements OnInit, OnDestroy {
   }
 
   handleAdd(date: Date): void {
+    if (!this.createQotd) return;
     const year = date.getFullYear().toString();
     const month =
       (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1).toString();
@@ -269,6 +320,7 @@ export class QotdComponent implements OnInit, OnDestroy {
   }
 
   async onAdd(): Promise<void> {
+    if (!this.createQotd) return;
     if (this.addForm.invalid) {
       this.toastService.error("Please fill in all required fields.");
       return;

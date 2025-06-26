@@ -2,7 +2,6 @@ import { ProvisioningServiceClient } from 'azure-iot-provisioning-service';
 import { EnrollmentGroup } from 'azure-iot-provisioning-service/dist/interfaces';
 import { Registry } from 'azure-iothub';
 import dotenv from 'dotenv';
-import { createHmac } from 'crypto';
 dotenv.config();
 
 export class IoTService {
@@ -24,21 +23,6 @@ export class IoTService {
         }
         // Then, base64 encode
         return btoa(binary);
-    }
-
-    async deriveDeviceKey(groupId: string, deviceRegistrationId: string): Promise<string> {
-        const enrollmentGroup = (await this.provisioningServiceClient.getEnrollmentGroupAttestationMechanism(groupId)).responseBody;
-
-        if (!enrollmentGroup.symmetricKey) {
-            throw new Error('Enrollment group does not have a symmetric key');
-        }
-
-        const enrollmentGroupKeyB64 = enrollmentGroup.symmetricKey.primaryKey;
-        const groupKey = Buffer.from(enrollmentGroupKeyB64, 'base64');
-        const hmac = createHmac('sha256', groupKey);
-        hmac.update(deviceRegistrationId, 'utf8');
-        const deviceKey = hmac.digest();
-        return deviceKey.toString('base64');
     }
 
     async createEnrollmentGroup(tenantId: string, officeName: string, officeId: string, wifiName: string, wifiPassword: string): Promise<boolean> {
@@ -66,8 +50,9 @@ export class IoTService {
                         desired: {
                             wifiName: wifiName,
                             wifiPassword: wifiPassword,
+                            anchors: [],
                             version: 1,
-                            count: 2,
+                            count: 3,
                             metadata: {
                                 lastUpdated: new Date(),
                                 lastUpdatedVersion: 1
@@ -96,7 +81,7 @@ export class IoTService {
         }
     }
 
-    async updateEnrollmentGroup(tenantId: string, officeName: string, officeId: string, wifiName: string, wifiPassword: string): Promise<boolean> {
+    async updateEnrollmentGroup(tenantId: string, officeName: string, officeId: string, wifiName: string, wifiPassword: string, anchors: any): Promise<boolean> {
         try {
             const response = await this.provisioningServiceClient.getEnrollmentGroup(officeId);
             const currentEnrollmentGroup = response.responseBody;
@@ -123,8 +108,9 @@ export class IoTService {
                     desired: {
                         wifiName: wifiName,
                         wifiPassword: wifiPassword,
+                        anchors: anchors || [],
                         version: currentTwin.properties.desired.version + 1,
-                        count: 2,
+                        count: 3,
                         metadata: {
                             lastUpdated: new Date(),
                             lastUpdatedVersion: currentTwin.properties.desired.metadata.lastUpdatedVersion + 1

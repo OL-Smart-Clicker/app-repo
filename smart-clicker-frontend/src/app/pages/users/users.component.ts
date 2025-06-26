@@ -10,6 +10,8 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { NgIconsModule } from "@ng-icons/core";
 import { SpinnerComponent } from "../../components";
+import { AuthService } from "../../services/auth.service";
+import { ToastService } from "angular-toastify";
 
 @Component({
     selector: "app-users",
@@ -25,6 +27,8 @@ export class UsersComponent implements OnInit {
     searchTerm = '';
     loading = false;
     roleAssignLoading = false;
+    rolesAssign: boolean = false;
+    userId: string = '';
 
     // Form data for role assignment
     selectedRoleId: string = '';
@@ -33,15 +37,16 @@ export class UsersComponent implements OnInit {
         private guardServ: GuardService,
         private userService: UserService,
         private roleService: RoleService,
-    ) { }
-
-    icons = icons;
-
+        private authService: AuthService,
+        private toastService: ToastService
+    ) { } icons = icons;
     async ngOnInit(): Promise<void> {
-        await Promise.all([
+        this.userId = this.authService.getUserId();
+        const [role, _, __] = await Promise.all([
+            this.roleService.getUserRole(),
             this.loadUsers(),
-            this.loadRoles()
-        ]);
+            this.loadRoles()]);
+        this.rolesAssign = await this.guardServ.hasAccess(role, Permission.RolesAssign);
     }
 
     async loadUsers(): Promise<void> {
@@ -110,8 +115,10 @@ export class UsersComponent implements OnInit {
             await this.userService.assignRoleToUser(this.selectedUser.id, this.selectedRoleId);
             await this.loadUsers();
             this.cancelAssignRole();
+            this.toastService.success('Role assigned successfully.');
         } catch (error) {
             console.error('Error assigning role:', error);
+            this.toastService.error('Failed to assign role.');
         } finally {
             this.roleAssignLoading = false;
         }
