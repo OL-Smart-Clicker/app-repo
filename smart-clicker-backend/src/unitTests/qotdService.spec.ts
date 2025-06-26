@@ -1,15 +1,4 @@
-jest.mock('../db/db', () => ({
-    container: jest.fn().mockReturnValue({
-        items: {
-            query: jest.fn().mockReturnValue({
-                fetchAll: jest.fn().mockResolvedValue({ resources: [] })
-            })
-        },
-        item: jest.fn().mockReturnValue({
-            read: jest.fn().mockResolvedValue({ resource: null })
-        })
-    })
-}));
+jest.mock('../db/db', () => require('./mockDb'));
 
 import { QotdService } from '../services/qotdService';
 
