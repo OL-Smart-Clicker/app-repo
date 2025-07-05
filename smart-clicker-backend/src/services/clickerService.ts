@@ -1,11 +1,15 @@
 import { Container, Database } from "@azure/cosmos";
 import database from "../db/db";
+import { QotdService } from "./qotdService";
+import { Qotd } from "../models/qotd";
 
 export class ClickerService {
   private database: Database;
   private container: Container;
+  private qotdService: QotdService;
 
   constructor() {
+    this.qotdService = new QotdService();
     this.database = database;
     this.container = this.database.container("clicker-data");
   }
@@ -112,19 +116,41 @@ export class ClickerService {
     const decoded = resources.map((item: any) => {
       if (item.Body) {
         try {
-          return JSON.parse(atob(item.Body));
+          return { ...item, ...JSON.parse(atob(item.Body)) };
         } catch (e) {
           return item;
         }
       }
       return item;
     });
-    // Get all unique keys
-    const keys = Array.from(new Set(decoded.flatMap((item: any) => Object.keys(item))));
-    // CSV header
-    const header = keys.join(',');
-    // CSV rows
-    const rows = decoded.map((item: any) => keys.map(k => JSON.stringify(item[k] ?? '')).join(','));
-    return [header, ...rows].join('\n');
+
+    const rows: string[] = [];
+    const baseKeys = Array.from(new Set(decoded.flatMap((item: any) => Object.keys(item))));
+    const keys = [...baseKeys, 'officeSpaceId', 'qotd'];
+    rows.push(keys.join(','));
+
+    for (const item of decoded) {
+      let date: Date;
+      if (item._ts) {
+        date = new Date(item._ts * 1000);
+      } else {
+        date = new Date();
+      }
+      let qotdText = '';
+      try {
+        const qotd: Qotd | null = await this.qotdService.getQotdForOffice(officeSpaceId, date);
+        qotdText = qotd?.question || '';
+      } catch (e) {
+        qotdText = '';
+      }
+      // Compose row
+      const row = keys.map(k => {
+        if (k === 'officeSpaceId') return JSON.stringify(officeSpaceId);
+        if (k === 'qotd') return JSON.stringify(qotdText);
+        return JSON.stringify(item[k] ?? '');
+      }).join(',');
+      rows.push(row);
+    }
+    return rows.join('\n');
   }
 }

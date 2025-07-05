@@ -62,7 +62,8 @@
             </div>
             <div class="bg-white rounded-xl shadow p-6 min-h-[120px] flex flex-col items-center justify-center">
                 <div class="text-lg font-semibold mb-3 text-primary-blue">Click Activity Timeline</div>
-                <app-timeline-chart [data]="clickerData"></app-timeline-chart>
+                <app-timeline-chart *ngIf="clickerData.length > 0" [data]="clickerData"></app-timeline-chart>
+                <span *ngIf="clickerData.length === 0" class="text-secondary-blue">No data.</span>
             </div>
             <div class="flex flex-col gap-4 w-full">
                 <div class="bg-white rounded-xl shadow p-4 flex flex-col items-center justify-center">
@@ -97,9 +98,10 @@
                             <td class="px-4 py-2 border-b">{{ row.deviceId || row.id }}</td>
                             <td class="px-4 py-2 border-b">{{ row.timestamp * 1000 | date:'yyyy-MM-dd HH:mm:ss' }}</td>
                             <td class="px-4 py-2 border-b">
-                                <ng-container *ngIf="row.distances && row.distances.length; else noDist">
-                                    <span *ngFor="let d of row.distances; let i = index">
-                                        {{ d }}<span *ngIf="i < row.distances.length - 1">, </span>
+                                <ng-container *ngIf="row.uwb.distances && row.uwb.distances.length; else noDist">
+                                    <span *ngFor="let obj of row.uwb.distances; let i = index">
+                                        Anchor {{obj.id}}: {{ obj.distance }} m<span
+                                            *ngIf="i < row.uwb.distances.length - 1">, </span>
                                     </span>
                                 </ng-container>
                                 <ng-template #noDist><span class="text-gray-400">-</span></ng-template>
