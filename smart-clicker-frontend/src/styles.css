@@ -1,3 +1,4 @@
+@import "../node_modules/angular-calendar/css/angular-calendar.css";
 @import "tailwindcss";
 
 @theme {
@@ -15,4 +16,28 @@
     --color-primary-light-blue: #cde0f8;
     --color-secondary-light-blue: #468de5;
     --color-primary-green: #4caf50;
+}
+
+/* Custom scrollbar styles */
+.scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db #f3f4f6;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
 }

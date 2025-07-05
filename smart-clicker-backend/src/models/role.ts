@@ -1,6 +1,6 @@
 export type Role = {
     id?: string,
-    RoleId?: string,
-    RoleName: string,
-    Permissions: number
+    tenantId: string,
+    roleName: string,
+    permissions: number
 }

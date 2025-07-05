@@ -1,26 +1,48 @@
-import { Injectable } from '@angular/core';
-import { env } from '../../environments/environment';
-import axios from 'axios';
-import { AuthService } from './auth.service';
-import { Role } from '../types/role';
+import { Injectable } from "@angular/core";
+import axios from "axios";
+import { AuthService } from "./auth.service";
+import { Role } from "../types/role";
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: "root",
 })
-
 export class RoleService {
+  constructor(private authService: AuthService) { }
 
-    constructor(private authService: AuthService) {
-    }
+  private async getAuthConfig() {
+    const token = await this.authService.getToken();
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  }
 
-    async getUserRole(id: string): Promise<Role> {
-        const token = await this.authService.getToken();
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        };
-        const response = await axios.get(`${env.API_URL}/role/${id}`, config)
-        return response.data as Role;
-    }
+  async getUserRole(): Promise<Role> {
+    const config = await this.getAuthConfig();
+    const response = await axios.get(`api/role/self`, config);
+    return response.data as Role;
+  }
+
+  async createRole(role: Role): Promise<Role> {
+    const config = await this.getAuthConfig();
+    const response = await axios.post(`api/role`, role, config);
+    return response.data as Role;
+  }
+
+  async updateRole(role: Role): Promise<Role> {
+    const config = await this.getAuthConfig();
+    const response = await axios.put(`api/role/${role.id}`, role, config);
+    return response.data as Role;
+  }
+  async assignRoleToUser(userId: string, roleId: string): Promise<void> {
+    const config = await this.getAuthConfig();
+    await axios.post(`api/role/assign`, { userId, roleId }, config);
+  }
+
+  async getAllRoles(): Promise<Role[]> {
+    const config = await this.getAuthConfig();
+    const response = await axios.get(`api/role`, config);
+    return response.data as Role[];
+  }
 }

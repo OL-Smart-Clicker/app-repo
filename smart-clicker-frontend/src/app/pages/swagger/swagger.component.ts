@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { env } from '../../../environments/environment';
 
 declare const SwaggerUIBundle: any;
 
@@ -17,7 +16,7 @@ export class SwaggerComponent implements OnInit {
                 SwaggerUIBundle.presets.apis,
                 SwaggerUIBundle.SwaggerUIStandalonePreset
             ],
-            url: `${env.API_URL}/api-docs`,
+            url: `/api/api-docs`,
             docExpansion: 'none',
             operationsSorter: 'alpha'
         });

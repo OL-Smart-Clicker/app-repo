@@ -5,9 +5,11 @@ import express from 'express';
 import { RoleService } from '../services/roleService';
 import { Permission } from '../models/permission';
 import { calculateBitmask } from '../utils/calculateBitmask';
+import { OfficeService } from '../services/officeService';
 
 dotenv.config();
 const roleService = new RoleService();
+const officeService = new OfficeService();
 
 function authorize(requiredPermissions: Permission[]) {
     return async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
@@ -21,6 +23,7 @@ function authorize(requiredPermissions: Permission[]) {
             }
 
             const decodedToken = jwt.decode(token, { complete: true });
+
             if (!decodedToken || !decodedToken.header || !decodedToken.header.kid) {
                 res.status(401).send({ error: 'UNAUTHORIZED' });
                 return;
@@ -45,29 +48,33 @@ function authorize(requiredPermissions: Permission[]) {
             }
 
             const userId = payload.oid;
-            const roleId = await roleService.getUserRole(userId);
-            if (!roleId) {
-                res.status(401).send({ error: 'UNAUTHORIZED' });
-                return;
-            }
-
-            const role = await roleService.getRoleById(roleId);
+            const userTenantId = payload.tid;
+            const role = await roleService.getUserRole(userId, userTenantId);
             if (!role) {
                 res.status(401).send({ error: 'UNAUTHORIZED' });
                 return;
             }
 
+            const officeSpaceId = req.params.officeSpaceId || req.body.officeSpaceId;
+            if (officeSpaceId) {
+                const office = await officeService.getOfficeByTenantId(officeSpaceId, userTenantId);
+                if (!officeSpaceId || !office) {
+                    res.status(401).send({ error: 'UNAUTHORIZED' });
+                    return;
+                }
+            }
+
             const requiredBitmask = calculateBitmask(requiredPermissions);
-            const userPermissionsBitmask = role.Permissions;
+            const userPermissionsBitmask = role.permissions;
 
             if ((userPermissionsBitmask & requiredBitmask) !== requiredBitmask) {
                 res.status(403).send({ error: 'FORBIDDEN' });
                 return;
             }
 
-            // TODO test this when we have cosmosdb setup 
-            // i don't know if it's supposed to be next() or
-            // return next()
+            (req as any).userId = userId;
+            (req as any).tenantId = payload.tid;
+
             next();
         } catch (error) {
             console.error("Authorization error:", error);

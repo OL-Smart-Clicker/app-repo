@@ -16,12 +16,10 @@ export class GuardService {
         const permission: Permission = route.data['permission'];
         const token = await this.authServ.getToken();
         if (token) {
-            const userId = this.authServ.getUserId();
-
-            const role: Role = await this.roleServ.getUserRole(userId);
+            const role: Role = await this.roleServ.getUserRole();
 
             const requiredBitmask = calculateBitmask([permission]);
-            const userPermissionsBitmask = role.Permissions;
+            const userPermissionsBitmask = role.permissions;
 
             if ((userPermissionsBitmask & requiredBitmask) === requiredBitmask) {
                 return true;
@@ -36,16 +34,11 @@ export class GuardService {
         }
     }
 
-    async hasAccess(permission: Permission): Promise<boolean> {
+    async hasAccess(role: Role, permission: Permission): Promise<boolean> {
         const token = await this.authServ.getToken();
         if (token) {
-            const userId = this.authServ.getUserId();
-
-            const role: Role = await this.roleServ.getUserRole(userId);
-
             const requiredBitmask = calculateBitmask([permission]);
-            const userPermissionsBitmask = role.Permissions;
-
+            const userPermissionsBitmask = role.permissions;
             return (userPermissionsBitmask & requiredBitmask) === requiredBitmask;
         }
         else {
