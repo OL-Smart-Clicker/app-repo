@@ -67,7 +67,6 @@ swagger.json                # Swagger API definition
 ## Contributors
 - Andrei Niculescu
 - Iasmina Huțupaș
-- Luc Oerlemans
 - Mario Constantin
 
 ## License

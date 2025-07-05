@@ -20,7 +20,7 @@ export class OfficeService {
     async createOffice(office: Office, fileBuffer: Buffer, mimeType: string): Promise<Office | null> {
         office.id = crypto.randomUUID();
         if (await this.iotService.createEnrollmentGroup(office.tenantId, office.name, office.id, office.wifiName, office.wifiPassword)) {
-            await this.blobService.uploadFloorPlan(office.tenantId, fileBuffer, mimeType);
+            await this.blobService.uploadFloorPlan(office.id, fileBuffer, mimeType);
             const newOffice: Office = {
                 id: office.id,
                 tenantId: office.tenantId,
