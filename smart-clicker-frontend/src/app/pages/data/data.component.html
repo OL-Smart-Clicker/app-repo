@@ -62,7 +62,8 @@
             </div>
             <div class="bg-white rounded-xl shadow p-6 min-h-[120px] flex flex-col items-center justify-center">
                 <div class="text-lg font-semibold mb-3 text-primary-blue">Click Activity Timeline</div>
-                <app-timeline-chart [data]="clickerData"></app-timeline-chart>
+                <app-timeline-chart *ngIf="clickerData.length > 0" [data]="clickerData"></app-timeline-chart>
+                <span *ngIf="clickerData.length === 0" class="text-secondary-blue">No data.</span>
             </div>
             <div class="flex flex-col gap-4 w-full">
                 <div class="bg-white rounded-xl shadow p-4 flex flex-col items-center justify-center">
