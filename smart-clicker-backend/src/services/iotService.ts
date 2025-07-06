@@ -25,7 +25,7 @@ export class IoTService {
         return btoa(binary);
     }
 
-    async createEnrollmentGroup(tenantId: string, officeName: string, officeId: string, wifiName: string, wifiPassword: string): Promise<boolean> {
+    async createEnrollmentGroup(tenantId: string, officeName: string, officeId: string, wifiName: string, wifiPassword: string): Promise<{ result: boolean, primaryKey: string }> {
         try {
             const primaryKey = this.generateBase64Key();
             const secondaryKey = this.generateBase64Key();
@@ -73,11 +73,11 @@ export class IoTService {
             };
 
             const result = await this.provisioningServiceClient.createOrUpdateEnrollmentGroup(enrollmentGroup);
-            if (!result) return false;
-            return true;
+            if (!result) return { result: false, primaryKey: '' };
+            return { result: true, primaryKey: primaryKey };
         } catch (error) {
             console.error('Error creating enrollment group:', error);
-            return false;
+            return { result: false, primaryKey: '' };
         }
     }
 

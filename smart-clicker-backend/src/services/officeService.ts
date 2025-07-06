@@ -19,7 +19,8 @@ export class OfficeService {
 
     async createOffice(office: Office, fileBuffer: Buffer, mimeType: string): Promise<Office | null> {
         office.id = crypto.randomUUID();
-        if (await this.iotService.createEnrollmentGroup(office.tenantId, office.name, office.id, office.wifiName, office.wifiPassword)) {
+        const response = await this.iotService.createEnrollmentGroup(office.tenantId, office.name, office.id, office.wifiName, office.wifiPassword);
+        if (response.result) {
             await this.blobService.uploadFloorPlan(office.id, fileBuffer, mimeType);
             const newOffice: Office = {
                 id: office.id,
@@ -27,6 +28,7 @@ export class OfficeService {
                 name: office.name,
                 wifiName: office.wifiName,
                 wifiPassword: office.wifiPassword,
+                primaryKey: response.primaryKey,
             }
             const { resource } = await this.container.items.create(newOffice);
             return resource as Office;
@@ -51,6 +53,7 @@ export class OfficeService {
                 wifiPassword: office.wifiPassword,
                 anchors: office.anchors,
                 scale: office.scale,
+                primaryKey: office.primaryKey,
             }
             const { resource } = await this.container
                 .item(office.id!, office.tenantId)
@@ -73,6 +76,7 @@ export class OfficeService {
                 floorPlan: oldOffice.floorPlan,
                 anchors: office.anchors,
                 scale: office.scale,
+                primaryKey: oldOffice.primaryKey,
             }
             const { resource } = await this.container.item(office.id, office.tenantId).replace(newOffice);
             if (!resource) return null;
