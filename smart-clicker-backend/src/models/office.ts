@@ -9,4 +9,5 @@ export type Office = {
     deviceCount?: number;
     qotdCount?: number;
     scale?: number; // grid size in px per meter
+    primaryKey?: string; // for Azure DPS
 }
