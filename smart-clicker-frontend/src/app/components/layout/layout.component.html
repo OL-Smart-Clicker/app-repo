@@ -92,24 +92,13 @@
                             </div>
                         </div>
                         <!-- Profile Dropdown -->
-                        <div class="inline-block mr-2" (focusout)="onFocusOut($event)">
-                            <button
-                                class="cursor-pointer my-2 p-2 transition-colors duration-300 transform hover:bg-primary-light-blue rounded-md"
-                                (click)="toggleDropdown()">
-                                <div class="py-1 flex align-middle">
-                                    <p class="mr-2">Profile</p>
-                                    <ng-icon [svg]="icons.heroUserCircle" />
-                                </div>
-                            </button>
-                            <div *ngIf="dropdownVisible"
-                                class="bg-white absolute right-0 py-2 mt-1 overflow-hidden origin-top-right rounded-md shadow-xl mr-6">
-                                <a href="#"
-                                    class="flex px-4 py-3 -mb-2 -mt-2 text-sm text-primary-blue capitalize transition-colors duration-300 transform hover:bg-primary-light-blue"
-                                    (click)="onClickLogout()">
-                                    <ng-icon [svg]="icons.heroArrowLeftStartOnRectangle" />
-                                    <p class="ml-2">Logout</p>
-                                </a>
-                            </div>
+                        <div class="inline-block mr-2">
+                            <a href="#"
+                                class="cursor-pointer flex px-4 py-3 -mb-2 -mt-2 text-primary-blue rounded-md transition-colors duration-300 transform hover:bg-primary-light-blue"
+                                (click)="onClickLogout()">
+                                <ng-icon [svg]="icons.heroArrowLeftStartOnRectangle" />
+                                <p class="ml-2">Logout</p>
+                            </a>
                         </div>
                     </div>
                 </div>

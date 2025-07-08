@@ -33,7 +33,6 @@ export class LayoutComponent implements OnInit {
   loading: boolean = true;
   sidebarVisible: boolean = true;
   textVisible: boolean = true;
-  dropdownVisible: boolean = false;
   icons = icons;
   navItems: any[] = [];
   routes: any[] = [
@@ -93,10 +92,6 @@ export class LayoutComponent implements OnInit {
         this.textVisible = !this.textVisible;
       }, 250);
     }
-  }
-
-  async toggleDropdown() {
-    this.dropdownVisible = !this.dropdownVisible;
   }
 
   onClickLogout() {
@@ -163,14 +158,6 @@ export class LayoutComponent implements OnInit {
     } else if (this.interacted) {
       this.sidebarVisible = true;
       this.textVisible = true;
-    }
-  }
-
-  onFocusOut(event: FocusEvent): void {
-    const relatedTarget = event.relatedTarget as HTMLElement;
-    const dropdownElement = event.currentTarget as HTMLElement;
-    if (!dropdownElement.contains(relatedTarget)) {
-      this.dropdownVisible = false;
     }
   }
 
