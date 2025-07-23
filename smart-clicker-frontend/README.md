@@ -1,14 +1,7 @@
-# Smart Clicker Frontend
 
-This is the frontend for the **Smart Clicker** project, built using **Angular** and **TailwindCSS**. It provides a user interface for viewing and analysing location data sent by ESP32 devices via Azure IoT Hub.
+# Smart Clicker 2.0 Frontend
 
-## Features
-- **Question of the Day Input** - Set the Question of the Day and plan questions in advance using a calendar. 
-- **Data Analysis** – Basic visualisation of received data.
-- **Multi-Building Support** – Filter data based on different office locations.
-- **Provisioning and Commissioning Flow (Optional)** - Easily implement the solution in a different location and store data separately.
-- **Interactive Floor Mapping (Optional)** - Create a virtual floor plan of the office and determine the UWB anchors locations.
-- **Authentication** – Secure access to the dashboard.
+This is the frontend for **Smart Clicker 2.0**, built with **Angular** and **TailwindCSS**. It provides a secure, role-based user interface for managing engagement and device infrastructure across multiple office locations. The frontend communicates with the backend API to visualize real-time and historical data, manage QOTDs, users, and roles, and configure office spaces and devices.
 
 ## Getting Started
 
@@ -22,60 +15,65 @@ Ensure you have the following installed:
 1. Clone the repository:
     ```
     git clone https://github.com/OL-Smart-Clicker/app-repo.git
+    ```
+    OR
+    
+    Extract the `app-repo.zip` archive.
+2. Change directory:
+    ```
     cd smart-clicker-frontend
     ```
-2. Install dependencies:
+3. Install dependencies:
     ```
     npm install
     ```
-3. Start the development server:
+4. Configure environment variables as described below.
+5. Start the development server:
     ```
-    ng serve --open
+    npm run dev
     ```
 
 ## Configuration
-Modify the environment files for API and Entra ID settings.
+Modify the environment files for API and Entra ID settings:
 - `src/environments/environment.ts` (Development)
 - `src/environments/environment.prod.ts` (Production)
 
 Example:
-    
-    export const env = {
-        PRODUCTION: false,
-        API_URL: 'http://localhost:80',
-        REDIRECT_URL: 'http://localhost:4200',
-        CLIENT_ID: '',
-        AUTHORITY: '',
-        TOKEN_SCOPE: ''
-    }
+```
+export const env = {
+    PRODUCTION: false,
+    API_URL: 'http://localhost:80',
+    REDIRECT_URL: 'http://localhost:4200',
+    CLIENT_ID: 'your-client-id',
+    AUTHORITY: 'https://login.microsoftonline.com/your-tenant-id',
+    TOKEN_SCOPE: 'api://your-client-id/.default'
+}
+```
 
 ## Project Structure
 ```
 src/
- ├── app/                   # Angular components & services
- │   ├── components/        # UI components
- │   ├── pages/             # Main pages (dashboard, settings, etc.)
- │   ├── services/          # API and data handling services
- │   ├── types/             # Type declarations
+ ├── app/
+ │   ├── components/        # Reusable UI components (sidebar, layout, etc.)
+ │   ├── pages/             # Main pages (dashboard, QOTD, users, roles, offices)
+ │   ├── services/          # API clients and business logic
+ │   ├── types/             # TypeScript interfaces and enums
  │   ├── utils/             # Utility functions
- │   ├── app.module.ts      # Main module
- │   └── app.routes.ts      # Website routes
- ├── assets/                # Static assets
- ├── environments/          # Environment configurations
- ├── styles.css             # Global styles + Tailwind configuration
- ├── main.ts                # Entry point
+ │   ├── app.module.ts      # Main Angular module
+ │   └── app.routes.ts      # Application routes
+ ├── assets/                # Static assets (images, icons, floor plans)
+ ├── environments/          # Environment configs
+ ├── styles.css             # TailwindCSS and global styles
+ ├── main.ts                # Angular entry point
  └── index.html             # Main HTML file
 ```
 
 ## Documentation
 - [Angular Docs](https://angular.dev/overview)
 - [TailwindCSS Docs](https://tailwindcss.com/docs/installation/framework-guides/angular)
-- [Azure IoT Hub Docs](https://learn.microsoft.com/en-us/azure/iot-hub/)
+- [Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/)
 
 ## Contributors
 - Andrei Niculescu
 - Iasmina Huțupaș
 - Mario Constantin
-
-## License
-This project is licensed under the MIT License.
