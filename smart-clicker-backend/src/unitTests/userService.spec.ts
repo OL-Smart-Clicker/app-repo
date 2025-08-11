@@ -2,7 +2,7 @@ import { UserService } from '../services/userService';
 
 jest.mock('../auth/graphAuth', () => ({ getGraphToken: jest.fn().mockResolvedValue({ accessToken: 'token' }), graphTokenRequest: {} }));
 jest.mock('axios');
-jest.mock('../db/db', () => require('./mockDb'));
+// jest.mock('../db/db', () => require('./mockDb'));
 
 describe('UserService', () => {
     let userService: UserService;

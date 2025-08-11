@@ -15,9 +15,9 @@ export class RoleService {
   }
 
   async init(): Promise<void> {
-    // if (await this.getRolesCount() === 0) {
-    await seedRoles();
-    // }
+    if (await this.getRolesCount() === 0) {
+      await seedRoles();
+    }
   }
 
   private async getRolesCount(): Promise<number> {

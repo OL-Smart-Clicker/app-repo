@@ -1,4 +1,4 @@
-jest.mock('../db/db', () => require('./mockDb'));
+// jest.mock('../db/db', () => require('./mockDb'));
 
 import { QotdService } from '../services/qotdService';
 
@@ -13,7 +13,7 @@ describe('QotdService', () => {
     });
 
     it('should return null if getQotdById not found', async () => {
-        const result = await qotdService.getQotdById('id','office');
+        const result = await qotdService.getQotdById('id', 'office');
         expect(result).toBeNull();
     });
 
@@ -37,7 +37,7 @@ describe('QotdService', () => {
 
     it('should deleteQotd call delete', async () => {
         (qotdService as any).container.item = jest.fn().mockReturnValue({ delete: jest.fn().mockResolvedValue({}) });
-        await expect(qotdService.deleteQotd('id','office')).resolves.toBeUndefined();
+        await expect(qotdService.deleteQotd('id', 'office')).resolves.toBeUndefined();
     });
 
     it('should updateQotd return true if existingQotd exists', async () => {
@@ -47,14 +47,14 @@ describe('QotdService', () => {
     });
 
     it('should getQotdsUntilToday return number', async () => {
-        (qotdService as any).container.items.query = jest.fn().mockReturnValue({ fetchAll: jest.fn().mockResolvedValue({ resources: [1,2,3] }) });
+        (qotdService as any).container.items.query = jest.fn().mockReturnValue({ fetchAll: jest.fn().mockResolvedValue({ resources: [1, 2, 3] }) });
         const result = await qotdService.getQotdsUntilToday('office');
         expect(result).toBe(3);
     });
 
     it('should handle error in getQotdById', async () => {
         (qotdService as any).container.item = jest.fn().mockReturnValue({ read: jest.fn().mockRejectedValue(new Error('Error')) });
-        await expect(qotdService.getQotdById('id','office')).rejects.toThrow('Error');
+        await expect(qotdService.getQotdById('id', 'office')).rejects.toThrow('Error');
     });
 
     it('should handle error in createQotd', async () => {
@@ -74,7 +74,7 @@ describe('QotdService', () => {
 
     it('should handle error in deleteQotd', async () => {
         (qotdService as any).container.item = jest.fn().mockReturnValue({ delete: jest.fn().mockRejectedValue(new Error('Error')) });
-        await expect(qotdService.deleteQotd('id','office')).rejects.toThrow('Error');
+        await expect(qotdService.deleteQotd('id', 'office')).rejects.toThrow('Error');
     });
 
     it('should handle error in updateQotd', async () => {

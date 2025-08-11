@@ -6,7 +6,7 @@ jest.mock('azure-iot-provisioning-service', () => ({
 
 jest.mock('azure-iothub', () => ({ Registry: { fromConnectionString: jest.fn().mockReturnValue({ createQuery: jest.fn().mockReturnValue({ hasMoreResults: false, nextAsTwin: jest.fn().mockResolvedValue({ result: [] }) }) }) } }));
 
-jest.mock('../db/db', () => require('./mockDb'));
+// jest.mock('../db/db', () => require('./mockDb'));
 
 describe('IoTService', () => {
     let iotService: IoTService;
@@ -19,10 +19,10 @@ describe('IoTService', () => {
     });
 
     it('should return false on createEnrollmentGroup error', async () => {
-        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
         (iotService as any).provisioningServiceClient.createOrUpdateEnrollmentGroup = jest.fn().mockRejectedValue(new Error('fail'));
-        const result = await iotService.createEnrollmentGroup('t','o','o','w','p');
-        expect(result).toBe(false);
+        const result = await iotService.createEnrollmentGroup('t', 'o', 'o', 'w', 'p');
+        expect(result.result).toBe(false);
         errorSpy.mockRestore();
     });
 
@@ -40,7 +40,7 @@ describe('IoTService', () => {
 
     it('should handle error in updateEnrollmentGroup', async () => {
         (iotService as any).provisioningServiceClient.getEnrollmentGroup = jest.fn().mockRejectedValue(new Error('fail'));
-        const result = await iotService.updateEnrollmentGroup('t','o','o','w','p',[]);
+        const result = await iotService.updateEnrollmentGroup('t', 'o', 'o', 'w', 'p', []);
         expect(result).toBe(false);
     });
 });

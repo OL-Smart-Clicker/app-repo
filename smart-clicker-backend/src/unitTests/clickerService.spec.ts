@@ -1,6 +1,6 @@
 import { ClickerService } from '../services/clickerService';
 
-jest.mock('../db/db', () => require('./mockDb'));
+// jest.mock('../db/db', () => require('./mockDb'));
 
 describe('ClickerService', () => {
     let clickerService: ClickerService;
@@ -20,7 +20,7 @@ describe('ClickerService', () => {
     });
 
     it('should getClickerDataByDate returns array', async () => {
-        clickerService.getClickerDataByDate = jest.fn().mockResolvedValue([{id:1}]);
+        clickerService.getClickerDataByDate = jest.fn().mockResolvedValue([{ id: 1 }]);
         const result = await clickerService.getClickerDataByDate('office1', new Date(), new Date());
         expect(Array.isArray(result)).toBe(true);
     });

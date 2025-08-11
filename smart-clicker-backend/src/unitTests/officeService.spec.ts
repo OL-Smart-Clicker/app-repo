@@ -1,4 +1,4 @@
-jest.mock('../db/db', () => require('./mockDb'));
+// jest.mock('../db/db', () => require('./mockDb'));
 
 import { OfficeService } from '../services/officeService';
 
@@ -19,7 +19,7 @@ describe('OfficeService', () => {
     });
 
     it('should getOfficeByTenantId return null if not found', async () => {
-        const result = await officeService.getOfficeByTenantId('id','tenant');
+        const result = await officeService.getOfficeByTenantId('id', 'tenant');
         expect(result).toBeNull();
     });
 

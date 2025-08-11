@@ -6,7 +6,7 @@ const id2 = crypto.randomUUID();
 const mockRole: Role = { id: id1, tenantId: "tenant1", roleName: "admin", permissions: 15 };
 const mockRole2: Role = { id: id2, tenantId: "tenant1", roleName: "user", permissions: 7 };
 
-jest.mock('../db/db', () => require('./mockDb'));
+// jest.mock('../db/db', () => require('./mockDb'));
 
 describe("RoleService", () => {
     let roleService: RoleService;
