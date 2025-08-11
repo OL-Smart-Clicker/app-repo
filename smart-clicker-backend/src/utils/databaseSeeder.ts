@@ -19,6 +19,14 @@ export async function seedRoles() {
         permissions: 4095,
     }
 
+    const { resources } = await rolesContainer.items.readAll().fetchAll();
+
+    await rolesContainer.item(resources[0].id!, resources[0].tenantId).delete();
+
+    const { resources: userResources } = await userRolesContainer.items.readAll().fetchAll();
+
+    await userRolesContainer.item(userResources[0].id!, userResources[0].roleId).delete();
+
     await rolesContainer.items.create(role);
 
     await userRolesContainer.items.create({
