@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: frontend-app
-        image: wvhacrstaging.azurecr.io/frontend:{{ .Values.image_tag }}
+        image: wvhacr{{ .Values.env }}.azurecr.io/frontend:{{ .Values.image_tag }}
         resources:
           requests:
             cpu: "100m"

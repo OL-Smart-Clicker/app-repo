@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/OL-Smart-Clicker/app-repo
     path: helm/frontend
-    targetRevision: staging
+    targetRevision: main
   destination:
     server: https://kubernetes.default.svc
     namespace: frontend

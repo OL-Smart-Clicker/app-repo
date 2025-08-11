@@ -1,1 +1,3 @@
 image_tag: 46e1098467647877bcb88f273a64900b26fa5425
+env: prod
+domain: prod.workplacevitalityhubstaging.nl

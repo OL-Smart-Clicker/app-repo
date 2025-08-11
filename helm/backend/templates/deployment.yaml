@@ -17,7 +17,7 @@ spec:
       serviceAccountName: backend-sa
       containers:
       - name: backend-app
-        image: wvhacrstaging.azurecr.io/backend:{{ .Values.image_tag }}
+        image: wvhacr{{ .Values.env }}.azurecr.io/backend:{{ .Values.image_tag }}
         resources:
           requests:
             cpu: "100m"

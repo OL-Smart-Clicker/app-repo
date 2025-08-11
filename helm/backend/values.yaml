@@ -1,4 +1,5 @@
 azure: 
-  clientId: 6c7dd5fc-01d3-476b-a977-120088c2650f
-  tenantId: 3cb226f3-72b0-447d-b57d-31f479808bad
+  clientId: 78aa64c9-5f91-4764-a021-f58d4770dbff
+  tenantId: a72d5a72-25ee-40f0-9bd1-067cb5b770d4
 image_tag: 46e1098467647877bcb88f273a64900b26fa5425
+env: prod
