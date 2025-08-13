@@ -12,6 +12,7 @@ import { OfficeService } from "../../services/office.service";
 import { Office } from "../../types/office";
 import { FormsModule } from '@angular/forms';
 import { Subscription } from "rxjs";
+import { Role } from "../../types/role";
 
 @Component({
   selector: "app-layout",
@@ -77,6 +78,8 @@ export class LayoutComponent implements OnInit {
       order: 6,
     },
   ];
+  noRole: boolean = false;
+  role: Role | null = null;
   offices: Office[] = [];
   selectedOfficeId: string | null = null;
   private officeSub: Subscription | undefined;
@@ -118,11 +121,18 @@ export class LayoutComponent implements OnInit {
       this.selectedOfficeId = id;
     });
 
-    const role = await this.roleServ.getUserRole();
+    try {
+      this.role = await this.roleServ.getUserRole();
+    }
+    catch (error) {
+      this.noRole = true;
+      this.loading = false;
+      return;
+    }
     this.routes.forEach(async (route: any) => {
       if (route.permission !== "") {
-        if (role) {
-          if (await this.guardServ.hasAccess(role, route.permission)) {
+        if (this.role) {
+          if (await this.guardServ.hasAccess(this.role, route.permission)) {
             this.navItems.push(route);
           }
         }
