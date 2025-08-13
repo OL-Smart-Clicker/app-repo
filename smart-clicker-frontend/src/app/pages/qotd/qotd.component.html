@@ -1,5 +1,8 @@
 <app-spinner *ngIf="loading" class="my-8 mx-auto block"></app-spinner>
-<div *ngIf="!loading">
+<div *ngIf="!loading && officeSpaceId === ''">
+  <h3 class="text-3xl font-semibold text-center">Please create an office before using this feature.</h3>
+</div>
+<div *ngIf="!loading && officeSpaceId !== ''">
   <div class="flex items-center justify-center gap-20 w-full mb-4">
     <div class="flex">
       <h3 class="text-3xl font-semibold">

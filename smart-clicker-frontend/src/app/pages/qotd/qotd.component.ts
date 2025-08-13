@@ -130,21 +130,26 @@ export class QotdComponent implements OnInit, OnDestroy {
 
   async getQotds() {
     this.loading = true;
-    await this.qotdService.getQotdsForOffice(this.officeSpaceId).then((qotds) => {
-      this.qotds = qotds.map((qotd) => {
-        return {
-          id: qotd.id,
-          title: qotd.question,
-          start: startOfDay(qotd.date),
-          color: this.blue,
-          draggable: true,
-          meta: {
-            officeSpaceId: qotd.officeSpaceId,
-          },
-        } as CalendarEvent;
+    try {
+      await this.qotdService.getQotdsForOffice(this.officeSpaceId).then((qotds) => {
+        this.qotds = qotds.map((qotd) => {
+          return {
+            id: qotd.id,
+            title: qotd.question,
+            start: startOfDay(qotd.date),
+            color: this.blue,
+            draggable: true,
+            meta: {
+              officeSpaceId: qotd.officeSpaceId,
+            },
+          } as CalendarEvent;
+        });
+        this.loading = false;
       });
+    }
+    catch (error) {
       this.loading = false;
-    });
+    }
   }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
