@@ -18,13 +18,13 @@
   <!-- Dashboard Grid -->
   <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
     <!-- Total Clicks This Week -->
-    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center min-h-[120px]">
+    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center min-h-[120px] text-center">
       <div class="text-lg font-semibold mb-2 text-primary-blue">Total Clicks this week</div>
       <div class="text-3xl font-bold text-primary-blue" *ngIf="clicksWeek > 0">{{clicksWeek}}</div>
       <span *ngIf="clicksWeek === 0" class="text-secondary-blue">No data.</span>
     </div>
     <!-- Total Clicks -->
-    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center min-h-[120px]">
+    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center min-h-[120px] text-center">
       <div class="text-lg font-semibold mb-2 text-primary-blue">Total Clicks</div>
       <div class="text-3xl font-bold text-primary-blue" *ngIf="clicksAll > 0">{{clicksAll}}</div>
       <span *ngIf="clicksAll === 0" class="text-secondary-blue">No data.</span>
@@ -55,13 +55,13 @@
       </div>
     </div>
     <!-- Week Overview Chart Placeholder -->
-    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center min-h-[180px] md:col-span-2">
+    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center min-h-[180px] md:col-span-2 text-center">
       <div class="text-lg font-semibold mb-2 text-primary-blue">Week Overview</div>
       <app-bar-chart *ngIf="clickerDataWeek.length > 0" [data]="clickerDataWeek"></app-bar-chart>
       <span *ngIf="clickerDataWeek.length === 0" class="text-secondary-blue">No data.</span>
     </div>
     <!-- Engagement Heatmap Placeholder -->
-    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center min-h-[180px] md:col-span-2">
+    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center min-h-[180px] md:col-span-2 text-center">
       <div class="text-lg font-semibold mb-2 text-primary-blue">Engagement Heatmap</div>
       <app-engagement-chart *ngIf="clickerDataYear.length > 0" [data]="clickerDataYear"></app-engagement-chart>
       <span *ngIf="clickerDataYear.length === 0" class="text-secondary-blue">No data.</span>

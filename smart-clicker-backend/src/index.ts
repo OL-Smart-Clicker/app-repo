@@ -81,6 +81,7 @@ app.use(
   }
 );
 
+// IMPORTANT! For running locally on Linux, run `sudo npm run dev`
 const port = process.env.BACKEND_PORT || 80;
 
 app.listen(port, async () => {
